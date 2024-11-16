@@ -17,3 +17,14 @@ Programmers Web Full Stack 4기 B반 'joinCrew'
 |2024.11.15 ~| 주제 및 기술 스택 회의|
 |-|-|
 |-|-|
+
+<br>
+
+## 4. Convention
+
+1. Commit Convention
+
+|분류|내용|예시|
+|------|---|---|
+|구현|feat/기능 설명|feat/메인 페이지 생성|
+|수정|fix/수정 내용|feat/메인 페이지 레이아웃 수정|
