@@ -1,9 +1,11 @@
 import React from 'react';
-
+import Header from './components/common/Header';
+import DateSlider from './components/DateSlider';
 function App() {
   return (
     <div>
-      <h1>joinCrew</h1>
+      <Header />
+      <DateSlider />
     </div>
   );
 }
