@@ -106,7 +106,7 @@ const DateButton = styled.button`
   }
 
   &.selected {
-    background-color: #1a73e8;
+    background-color:#74D36D;
     color: white;
   }
 `;
