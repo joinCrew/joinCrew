@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 interface FormInputs {
   exerciseType: string;
@@ -12,6 +13,7 @@ interface FormInputs {
 }
 
 function RecruitForm() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -19,6 +21,7 @@ function RecruitForm() {
   } = useForm<FormInputs>();
   const onSubmit = (data: FormInputs) => {
     console.log(data);
+    navigate("/write");
   };
 
   return (
@@ -26,19 +29,13 @@ function RecruitForm() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label>운동 종류</label>
-          <select
-            {...register("exerciseType", { required: "운동을 선택해주세요" })}
-          >
-            <option value="" disabled selected>
-              운동을 선택하세요
-            </option>
-            <option value="running">러닝</option>
-            <option value="hiking">등산</option>
-            <option value="fitness">헬스</option>
-            <option value="yoga">필라테스/요가</option>
-            <option value="football">축구</option>
-            <option value="others">기타</option>
-          </select>
+          <input
+            type="text"
+            {...register("exerciseType", {
+              required: "운동 종류를 입력해주세요",
+            })}
+            placeholder="운동 종류를 입력하세요"
+          />
           {errors.exerciseType && <p>{errors.exerciseType.message}</p>}
         </div>
 
@@ -118,21 +115,27 @@ function RecruitForm() {
   );
 }
 const RecruitFormStyle = styled.div`
+  height: calc(100vh - 70px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   form {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    width: 100%;
+    max-width: 400px;
 
     div {
-      margin-bottom: 20px;
-      width: 250px;
+      margin-bottom: 15px;  // 간격 줄임
+      width: 100%;
 
       p {
-        // 에러 메시지
         color: #ff4444;
         font-size: 12px;
-        margin-top: 5px;
+        margin-top: 3px;
         text-align: left;
         margin-bottom: 0;
       }
@@ -142,13 +145,13 @@ const RecruitFormStyle = styled.div`
     select {
       width: 100%;
       height: 40px;
-      margin-top: 10px;
-      border-radius: 10px;
-      border: 3px solid #8c8c8c;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 2px solid #8c8c8c;
 
       &:focus {
         border-color: #74D36D;
-        outline: none; 
+        outline: none;
       }
     }
 
@@ -156,6 +159,7 @@ const RecruitFormStyle = styled.div`
       display: block;
       text-align: left;
       font-weight: bold;
+      font-size: 14px;  // 폰트 크기 조정
     }
   }
 `;
