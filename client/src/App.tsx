@@ -1,12 +1,39 @@
 import React from 'react';
-import Header from './components/common/Header';
-import DateSlider from './components/DateSlider';
+import Home from './components/Home';
+import RecruitForm from './components/RecruitForm';
+import { createBrowserRouter } from 'react-router-dom';
+import Layout from './components/Layout';
+import { RouterProvider } from 'react-router';
+import WriteForm from './components/WriteForm';
 function App() {
+  const routeList = [
+    {
+      path:"/",
+      element: <Home />
+    },
+    {
+      path:"/recruit",
+      element:<RecruitForm />
+    },
+    {
+      path:"/write",
+      element:<WriteForm />
+    }
+  ];
+
+  const router = createBrowserRouter(
+    routeList.map((item) => {
+      return {
+        ...item,
+        element: <Layout>{item.element}</Layout>
+      };
+    })
+  );
+
   return (
-    <div>
-      <Header />
-      <DateSlider />
-    </div>
+    <>
+    <RouterProvider router={router} />
+    </>
   );
 }
 
