@@ -19,12 +19,12 @@ const HeaderStyle = styled.header`
   background-color: #5872a5;
   height: 70px;
   display: flex;
-  justify-content: space-between; 
-  align-items: center; 
+  justify-content: space-between;
+  align-items: center;
   padding: 0 20px;
 
   .logo {
-    height: 50px; 
+    height: 50px;
     display: flex;
     align-items: center;
     padding-left: 15%;
@@ -32,12 +32,12 @@ const HeaderStyle = styled.header`
     img {
       height: 100%;
       width: auto;
-      object-fit: contain; 
+      object-fit: contain;
       transform-origin: left center;
-      transform: scale(2.5); 
+      transform: scale(2.5);
     }
   }
-  
+
   .profile {
     font-size: 25px;
     margin-right: 10%;
