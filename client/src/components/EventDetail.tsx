@@ -1,57 +1,95 @@
 import { styled } from "styled-components";
 import { FaLocationDot, FaCalendarCheck } from "react-icons/fa6";
 import { IoPeople } from "react-icons/io5";
+import { useMeetingStore } from "../store/meetingStore";
+import { useLocation } from "react-router-dom";
+import { useState } from "react";
 
-export type DummyData = {
-  img: number;
-  eventTitle?: string;
-  eventLocation?: string;
-  eventDate?: string;
-  eventTime?: string;
-  eventAge?: string;
-  eventGender?: string;
-  description?: string;
-  now_member: number;
-  max_member: number;
-};
+// export type DummyData = {
+//   img: number;
+//   eventTitle?: string;
+//   eventLocation?: string;
+//   eventDate?: string;
+//   eventTime?: string;
+//   eventAge?: string;
+//   eventGender?: string;
+//   description?: string;
+//   now_member: number;
+//   max_member: number;
+// };
 
-export type detailProps = {
-  dummyData: DummyData;
-};
+// export type detailProps = {
+//   dummyData: DummyData;
+// };
 
-function EventDetail({ dummyData }: detailProps) {
+function EventDetail() {
+  const location = useLocation();
+  const meeting_id = location.state.meetingId;
+  const meetings = useMeetingStore((state) => state.meetings);
+  const updateMeeting = useMeetingStore((state) => state.updateMeeting);
+  //id 로 일치하는 모임 찾기
+  const meeting = meetings.find((meeting) => meeting.id === meeting_id);
+  const [hasjoined, setHasJoined] = useState(false); // 참여 여부 관리(한 번만 참여하기 누르게 하기 위함)
+
+  if (!meeting) {
+    return <div>모임을 찾을 수 없습니다.</div>;
+  }
+
+  const countParticipants = () => {
+    if (!hasjoined && meeting.currentParticipants < meeting.maxParticipants) {
+      const updatedMeeting = {
+        ...meeting,
+        currentParticipants: meeting.currentParticipants + 1,
+        isClosed: meeting.currentParticipants + 1 >= meeting.maxParticipants
+      };
+      updateMeeting(meeting_id, updatedMeeting);
+      setHasJoined(true);
+    }
+  };
+
   return (
     <EventDetailStyle>
       <div>
         <img
-          src={`http://picsum.photos/id/${dummyData.img}/1000/600`}
-          alt={dummyData.eventTitle || "Event Image"}
+          src={`http://picsum.photos/id/${meeting.id}/1000/600`}
+          alt={meeting.title || "Event Image"}
         />
-        <h1>{dummyData.eventTitle}</h1>
+        <h1>{meeting.title}</h1>
         <div className="center">
           <div className="info">
             <p className="location">
               <FaLocationDot />
-              {dummyData.eventLocation}
+              {meeting.location}
             </p>
             <p className="time">
               <FaCalendarCheck />
-              {`${dummyData.eventDate} ${dummyData.eventTime}`}
+              {`${meeting.date} ${meeting.time}`}
             </p>
             <p className="age">
               <IoPeople />
-              {dummyData.eventAge}
+              {meeting.ageRange === "any"
+                ? "연령무관"
+                : `${meeting.ageRange}대`}
             </p>
-            <p className="gender">{dummyData.eventGender}</p>
+            <p className="gender">
+              {meeting.gender === "female"
+                ? "여자만"
+                : meeting.gender === "male"
+                ? "남자만"
+                : "성별무관"}
+            </p>
           </div>
           <div className="join">
-            <StyledButton>참여하기</StyledButton>
+            <StyledButton onClick={() => countParticipants()}
+              disabled={hasjoined || meeting.isClosed}>
+              참여하기
+            </StyledButton>
             <span>
-              현재 인원 : {dummyData.now_member} / {dummyData.max_member} 명
+              현재 인원: {meeting.currentParticipants} / {meeting.maxParticipants} 명
             </span>
           </div>
         </div>
-        <div className="contents">{dummyData.description}</div>
+        <div className="contents">{meeting.content}</div>
         <div className="map">지도</div>
       </div>
     </EventDetailStyle>
@@ -111,6 +149,9 @@ const EventDetailStyle = styled.div`
     height: auto;
     overflow: auto;
     word-wrap: break-word;
+  }
+  svg {
+    margin-right: 10px;
   }
 `;
 

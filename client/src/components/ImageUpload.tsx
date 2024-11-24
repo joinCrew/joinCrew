@@ -6,10 +6,28 @@ function ImageUpload() {
   const [selectedImage, setSelectedImage] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async(event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedImage(URL.createObjectURL(file));
+
+      // FormData 객체 생성
+      // const formData = new FormData();
+      // formData.append("image", file);
+
+      // try {
+      //   const response = await fetch('your-api-endpoint/upload', {
+      //     method: 'POST',
+      //     body: formData
+      //   });
+        
+      //   if (response.ok) {
+      //     const data = await response.json();
+      //     console.log('이미지 업로드 성공:', data);
+      //   }
+      // } catch (error) {
+      //   console.error('이미지 업로드 실패:', error);
+      // }
     }
   };
 
@@ -40,12 +58,6 @@ function ImageUpload() {
 }
 
 const ImageUploadStyle = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: calc(100vh - 70px);
-  padding: 100px;
-
   .image-container {
     width: 600px;
     height: 400px;
@@ -57,6 +69,7 @@ const ImageUploadStyle = styled.div`
     border-radius: 8px;
     cursor: pointer;
     overflow: hidden;
+    margin-right:50px;
 
     &:has(img) {
       border: none;

@@ -5,9 +5,13 @@ import "swiper/css/navigation";
 import { addDays, format } from "date-fns";
 import { ko } from "date-fns/locale";
 import styled from "styled-components";
-import { useState } from "react";
 
-const DateSlider = () => {
+interface DateSliderProps {
+  selectedDate: string;
+  onDateSelect: (date: string) => void;
+}
+
+const DateSlider = ({ selectedDate, onDateSelect }: DateSliderProps) => {
   const getTwoWeekDates = () => {
     const dates = [];
     const today = new Date();
@@ -26,14 +30,8 @@ const DateSlider = () => {
   };
 
   const dates = getTwoWeekDates();
-  // 오늘 날짜를 초기값으로 설정
-  const [selectedDate, setSelectedDate] = useState<string>(() => {
-    const today = new Date();
-    return format(today, "d");
-  });
   const handleDateClick = (date: string) => {
-    setSelectedDate(date);
-    // 여기에 날짜 선택 시 실행할 로직 추가
+    onDateSelect(date);  // 부모로부터 받은 함수를 통해 상태 변경
   };
 
   return (

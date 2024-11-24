@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import Button from "./common/Button";
+import { useMeetingStore } from "../store/meetingStore";
 
 interface FormInputs {
   exerciseType: string;
@@ -19,9 +21,35 @@ function RecruitForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormInputs>();
+
   const onSubmit = (data: FormInputs) => {
-    console.log(data);
-    navigate("/write");
+    const meetingData = {
+      id: Date.now(), // 고유 ID 생성
+      exerciseType: data.exerciseType,
+      date: data.date,
+      time: data.time,
+      location: data.location,
+      gender: data.gender,
+      ageRange: data.ageRange,
+      title: "",
+      content: "",
+      currentParticipants:0,
+      maxParticipants: data.maxParticipants,
+      isClosed: false,
+    };
+
+    navigate("/write", {
+      state: { meetingData },
+    });
+  };
+
+  const today = new Date();
+  const twoWeeksLater = new Date(today);
+  twoWeeksLater.setDate(today.getDate() + 14);
+
+  // 날짜를 YYYY-MM-DD 형식의 문자열로 변환하는 함수
+  const formatDate = (date: Date) => {
+    return date.toISOString().split("T")[0];
   };
 
   return (
@@ -36,17 +64,28 @@ function RecruitForm() {
             })}
             placeholder="운동 종류를 입력하세요"
           />
-          {errors.exerciseType && <p>{errors.exerciseType.message}</p>}
         </div>
+        {errors.exerciseType && <p>{errors.exerciseType.message}</p>}
 
         <div>
           <label>날짜</label>
           <input
             type="date"
-            {...register("date", { required: "날짜를 선택해주세요" })}
+            min={formatDate(today)}
+            max={formatDate(twoWeeksLater)}
+            {...register("date", {
+              required: "날짜를 선택해주세요",
+              validate: (value) => {
+                const selectedDate = new Date(value);
+                return (
+                  (selectedDate >= today && selectedDate <= twoWeeksLater) ||
+                  "2주 이내의 날짜만 선택 가능합니다"
+                );
+              },
+            })}
           />
-          {errors.date && <p>{errors.date.message}</p>}
         </div>
+        {errors.date && <p>{errors.date.message}</p>}
 
         <div>
           <label>시간</label>
@@ -54,8 +93,8 @@ function RecruitForm() {
             type="time"
             {...register("time", { required: "시간을 입력해주세요" })}
           />
-          {errors.time && <p>{errors.time.message}</p>}
         </div>
+        {errors.time && <p>{errors.time.message}</p>}
 
         <div>
           <label>장소</label>
@@ -64,8 +103,8 @@ function RecruitForm() {
             {...register("location", { required: "장소를 입력해주세요" })}
             placeholder="운동 장소를 입력하세요"
           />
-          {errors.location && <p>{errors.location.message}</p>}
         </div>
+        {errors.location && <p>{errors.location.message}</p>}
 
         <div>
           <label>최대 인원</label>
@@ -77,8 +116,8 @@ function RecruitForm() {
             })}
             min="2"
           />
-          {errors.maxParticipants && <p>{errors.maxParticipants.message}</p>}
         </div>
+        {errors.maxParticipants && <p>{errors.maxParticipants.message}</p>}
 
         <div>
           <label>성별</label>
@@ -90,8 +129,8 @@ function RecruitForm() {
             <option value="male">남성</option>
             <option value="any">성별무관</option>
           </select>
-          {errors.gender && <p>{errors.gender.message}</p>}
         </div>
+        {errors.gender && <p>{errors.gender.message}</p>}
 
         <div>
           <label>연령대</label>
@@ -101,19 +140,19 @@ function RecruitForm() {
             <option value="" disabled selected>
               연령대를 선택하세요
             </option>
-            <option value="20s">20대</option>
-            <option value="30s">30대</option>
-            <option value="40s">40대</option>
+            <option value="20">20대</option>
+            <option value="30">30대</option>
+            <option value="40">40대</option>
             <option value="any">연령무관</option>
           </select>
-          {errors.ageRange && <p>{errors.ageRange.message}</p>}
         </div>
-
-        <button type="submit">다음</button>
+        {errors.ageRange && <p>{errors.ageRange.message}</p>}
+        <Button>다음</Button>
       </form>
     </RecruitFormStyle>
   );
 }
+
 const RecruitFormStyle = styled.div`
   height: calc(100vh - 70px);
   display: flex;
@@ -123,43 +162,66 @@ const RecruitFormStyle = styled.div`
   form {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 20px;
+    padding: 40px;
     width: 100%;
-    max-width: 400px;
+    max-width: 800px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
 
     div {
-      margin-bottom: 15px;  // 간격 줄임
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
       width: 100%;
+      position: relative;
 
-      p {
-        color: #ff4444;
-        font-size: 12px;
-        margin-top: 3px;
+      label {
+        width: 120px;
+        font-weight: 600;
+        font-size: 20px;
+        color: #333;
         text-align: left;
-        margin-bottom: 0;
+        padding-right: 20px;
+      }
+
+      input,
+      select {
+        flex: 1;
+        height: 48px;
+        padding: 0 16px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 15px;
+        color: #333;
+        background-color: #fff;
+        transition: all 0.2s ease;
+
+        &:focus {
+          border-color: #74d36d;
+          box-shadow: 0 0 0 2px rgba(116, 211, 109, 0.2);
+          outline: none;
+        }
+
+        &::placeholder {
+          color: #999;
+        }
+      }
+
+      select {
+        cursor: pointer;
+        padding-right: 40px;
       }
     }
 
-    input,
-    select {
-      width: 100%;
-      height: 40px;
-      margin-top: 5px;
-      border-radius: 8px;
-      border: 2px solid #8c8c8c;
-
-      &:focus {
-        border-color: #74D36D;
-        outline: none;
-      }
-    }
-
-    label {
-      display: block;
+    p {
+      color: #ff4444;
+      font-size: 13px;
+      margin-top: -16px;
+      margin-bottom: 16px;
+      margin-left: 120px;
       text-align: left;
-      font-weight: bold;
-      font-size: 14px;  // 폰트 크기 조정
     }
   }
 `;
