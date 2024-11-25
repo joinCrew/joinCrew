@@ -1,6 +1,8 @@
 import { styled } from "styled-components";
 import { FaLocationDot, FaCalendarCheck } from "react-icons/fa6";
 import { IoPeople } from "react-icons/io5";
+import { useAuth } from "./hooks/useAuth";
+import Logout from "./Logout";
 
 export type DummyData = {
   img: number;
@@ -53,6 +55,7 @@ function EventDetail({ dummyData }: detailProps) {
         </div>
         <div className="contents">{dummyData.description}</div>
         <div className="map">지도</div>
+        <Logout></Logout>
       </div>
     </EventDetailStyle>
   );

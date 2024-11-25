@@ -2,29 +2,37 @@ import { styled } from "styled-components";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useToast } from "./hooks/useToast";
+import { useAuth } from "./hooks/useAuth";
+import { LoginProps } from "./api/auth.api";
 
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { showToast } = useToast();
+  const { userSignup } = useAuth();
 
-  const handleSignup = (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSignup = async (data: LoginProps) => {
     if (password !== confirmPassword) {
       alert("비밀번호가 일치하지 않습니다!");
       return;
     }
+    try {
+      await userSignup(data); // 실제 회원가입 로직 처리
+      showToast("회원 가입이 완료되었습니다!");
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+    }
+  };
 
-    // 회원가입 요청 처리 로직
-    console.log("Signup attempted with:", { email, password });
-    showToast("회원 가입이 완료되었습니다!");
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleSignup({ email, password });
   };
 
   return (
     <SignupStyle>
-      <form onSubmit={handleSignup}>
+      <form onSubmit={onSubmit}>
         <h1>Signup</h1>
         <div className="input-group">
           <label htmlFor="email">이메일</label>
