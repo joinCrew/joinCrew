@@ -5,14 +5,14 @@ const ensureAuthorization = require("../auth");
 const getNextDate = require("../util");
 
 const getMypage = async (req, res) => {
-  const conn = await mysql.createConnection({
-    host: "localhost",
-    user: "",
-    password: "",
-    port: 3307,
-    database: "",
-    dateStrings: true,
-  });
+    const conn = await mysql.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "root",
+        port : 3307,
+        database: "joinCrew",
+        dateStrings: true,
+    });
   let authorization = ensureAuthorization(req, res);
   if (authorization instanceof jwt.TokenExpiredError) {
     return res.status(StatusCodes.UNAUTHORIZED).json({

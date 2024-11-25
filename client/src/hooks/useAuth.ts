@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useToast } from "./useToast";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../store/authStore";
 import { login, LoginProps, signup } from "../api/auth.api";
 
 export const useAuth = () => {

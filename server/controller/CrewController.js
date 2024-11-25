@@ -9,11 +9,11 @@ const { defaultMaxListeners } = require('nodemailer/lib/xoauth2');
 
 const joinIn = async (req, res)=>{
     const conn = await mysql.createConnection({
-        host: "",
-        user: "",
-        password: "",
-        port : 3306,
-        database: "",
+        host: "localhost",
+        user: "root",
+        password: "root",
+        port : 3307,
+        database: "joinCrew",
         dateStrings: true,
     });
     let authorization = ensureAuthorization(req, res);
@@ -67,13 +67,13 @@ const joinIn = async (req, res)=>{
 const detach = async (req,res)=>{
 
     const conn = await mysql.createConnection({
-        host: "",
-        user: "",
-        password: "",
-        port : 3306,
-        database: "",
-        dateStrings: true,
-    });
+      host: "localhost",
+      user: "root",
+      password: "root",
+      port : 3307,
+      database: "joinCrew",
+      dateStrings: true,
+  });
     let authorization = ensureAuthorization(req, res);
     if (authorization instanceof jwt.TokenExpiredError) {
         return res.status(StatusCodes.UNAUTHORIZED).json({

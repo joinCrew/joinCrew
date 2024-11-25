@@ -1,13 +1,13 @@
 import React from "react";
-import Home from "./components/Home";
-import RecruitForm from "./components/RecruitForm";
+import Home from "./pages/Home";
+import RecruitForm from "./pages/RecruitForm";
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "./components/Layout";
 import { RouterProvider } from "react-router";
-import WriteForm from "./components/WriteForm";
-import EventDetail from "./components/EventDetail";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
+import WriteForm from "./pages/WriteForm";
+import EventDetail from "./pages/EventDetail";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import ResetPassword from "./components/ResetPassword";
 import ToastContainer from "./components/common/toast/ToastContainer";
 
