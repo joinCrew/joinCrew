@@ -11,6 +11,4 @@ const getNextDate= (nowDate)=>{
     dateString += " 00:00:00";
     return dateString;
 }
-
-
 module.exports = getNextDate;
