@@ -10,10 +10,10 @@ const {transporter} = require('../email')
 const getEvents= async (req, res) => {
     const conn = await mysql.createConnection({
         host: "localhost",
-        user: "",
-        password: "",
+        user: "root",
+        password: "root",
         port : 3307,
-        database: "",
+        database: "joinCrew",
         dateStrings: true,
     });
     let {current_date} = req.query;
@@ -89,10 +89,10 @@ const removeEvent = async (req, res)=>{
     
     const conn = await mysql.createConnection({ //비동기 처리
         host: "localhost",
-        user: "",
-        password: "",
+        user: "root",
+        password: "root",
         port : 3307,
-        database: "",
+        database: "joinCrew",
         dateStrings: true,
       });
     let authorization = ensureAuthorization(req, res);

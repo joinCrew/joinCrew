@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import ImageUpload from "./ImageUpload";
+import ImageUpload from "../components/ImageUpload";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMeetingStore } from "../store/meetingStore";
-import Button from "./common/Button";
+import Button from "../components/common/Button";
 
 interface FormInputs {
   title: string;

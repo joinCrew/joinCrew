@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 navigate 사용
-import { httpClient } from "./api/http";
+import { httpClient } from "../api/http";
 import { useAuthStore } from "../store/authStore";
 
 const Logout = () => {

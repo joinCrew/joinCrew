@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import DateSlider from "./DateSlider";
+import DateSlider from "../components/DateSlider";
 import { useMeetingStore } from "../store/meetingStore";
 import { useState } from "react";
 import { format } from "date-fns";

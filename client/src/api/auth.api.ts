@@ -1,4 +1,4 @@
-import { User } from "../../store/authStore";
+import { User } from "../store/authStore";
 import { httpClient } from "./http";
 
 export interface LoginProps {

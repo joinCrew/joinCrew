@@ -1,60 +1,82 @@
 import { styled } from "styled-components";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useToast } from "./hooks/useToast";
-import { useAuth } from "./hooks/useAuth";
-import { useAuthStore } from "../store/authStore";
-import { LoginProps } from "./api/auth.api";
+import { useToast } from "../hooks/useToast";
+import { useAuth } from "../hooks/useAuth";
+import { LoginProps } from "../api/auth.api";
 
-function Login() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginProps>();
+function Signup() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const { showToast } = useToast();
+  const { userSignup } = useAuth();
 
-  const { userLogin } = useAuth();
+  const handleSignup = async (data: LoginProps) => {
+    if (password !== confirmPassword) {
+      alert("비밀번호가 일치하지 않습니다!");
+      return;
+    }
+    try {
+      await userSignup(data); // 실제 회원가입 로직 처리
+      showToast("회원 가입이 완료되었습니다!");
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+    }
+  };
 
-  const onSubmit = (data: LoginProps) => {
-    userLogin(data);
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleSignup({ email, password });
   };
 
   return (
-    <LoginStyle>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <h1>Login</h1>
+    <SignupStyle>
+      <form onSubmit={onSubmit}>
+        <h1>Signup</h1>
         <div className="input-group">
-          <label htmlFor="email">아이디</label>
+          <label htmlFor="email">이메일</label>
           <input
-            type="text"
+            type="email"
             id="email"
-            {...register("email", { required: "아이디를 입력하세요" })}
-            placeholder="아이디를 입력하세요"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="이메일을 입력하세요"
+            required
           />
-          {errors.email && <p className="error-text">이메일을 입력해주세요.</p>}
         </div>
         <div className="input-group">
           <label htmlFor="password">비밀번호</label>
           <input
             type="password"
             id="password"
-            {...register("password", { required: "비밀번호를 입력하세요" })}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="비밀번호를 입력하세요"
+            required
           />
-          {errors.password && (
-            <p className="error-text">비밀번호를 입력해주세요.</p>
-          )}
         </div>
-        <button type="submit">로그인</button>
+        <div className="input-group">
+          <label htmlFor="confirmPassword">비밀번호 확인</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="비밀번호를 다시 입력하세요"
+            required
+          />
+        </div>
+        <button type="submit">회원가입</button>
         <div className="links">
-          <Link to="/signup">회원가입</Link>
+          <Link to="/login">로그인 화면으로 돌아가기</Link>
         </div>
       </form>
-    </LoginStyle>
+    </SignupStyle>
   );
 }
 
-const LoginStyle = styled.div`
+const SignupStyle = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -100,12 +122,6 @@ const LoginStyle = styled.div`
         border-color: #007bff;
         box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
       }
-
-      span {
-        color: red;
-        font-size: 0.9rem;
-        margin-top: 0.3rem;
-      }
     }
 
     button {
@@ -144,4 +160,4 @@ const LoginStyle = styled.div`
   }
 `;
 
-export default Login;
+export default Signup;
