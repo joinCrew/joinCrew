@@ -27,6 +27,8 @@ app.listen(process.env.PORT, ()=>{
 const userRouter = require("./routes/users");
 const evenRouter = require("./routes/events");
 const crewRouter = require("./routes/crew");
+const mypageRouter = require("./routes/mypage");
 app.use("/users", userRouter);
 app.use('/events', evenRouter);
 app.use('/crew', crewRouter);
+app.use('/my-page', mypageRouter);
