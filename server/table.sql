@@ -13,6 +13,7 @@ CREATE TABLE events (
   location varchar(200),
   gender varchar(30),
   ages varchar(30),
+  event_date DATETIME
 );
 
 CREATE TABLE eventMember (
