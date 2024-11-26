@@ -13,7 +13,8 @@ export const useAuth = () => {
     login(data)
       .then((res) => {
         const { user, token } = res;
-        storeLogin(user, token);
+        console.log("Login response:", user, token); // 로그인 응답 확인
+        storeLogin(user, token); // 상태 업데이트
         showToast("로그인 성공");
         navigate("/");
       })

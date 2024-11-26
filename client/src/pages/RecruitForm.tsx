@@ -11,7 +11,7 @@ interface FormInputs {
   location: string;
   maxParticipants: number;
   gender: string;
-  ageRange: string;
+  ages: string;
 }
 
 function RecruitForm() {
@@ -30,7 +30,7 @@ function RecruitForm() {
       time: data.time,
       location: data.location,
       gender: data.gender,
-      ageRange: data.ageRange,
+      ages: data.ages,
       title: "",
       content: "",
       currentParticipants: 0,
@@ -134,9 +134,7 @@ function RecruitForm() {
 
         <div>
           <label>연령대</label>
-          <select
-            {...register("ageRange", { required: "연령대를 선택해주세요" })}
-          >
+          <select {...register("ages", { required: "연령대를 선택해주세요" })}>
             <option value="" disabled selected>
               연령대를 선택하세요
             </option>
@@ -146,7 +144,7 @@ function RecruitForm() {
             <option value="any">연령무관</option>
           </select>
         </div>
-        {errors.ageRange && <p>{errors.ageRange.message}</p>}
+        {errors.ages && <p>{errors.ages.message}</p>}
         <Button>다음</Button>
       </form>
     </RecruitFormStyle>

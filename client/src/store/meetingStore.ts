@@ -13,6 +13,7 @@ interface Meeting {
   currentParticipants: number; // 현재 참여 인원
   maxParticipants: number; // 최대 인원
   isClosed: boolean; // 모집 마감
+  is_full: boolean;
   imageUrl?: string; // 이미지 URL 저장 필드 추가
 }
 

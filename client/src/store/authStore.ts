@@ -14,13 +14,20 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  isAuthenticated: false,
-  token: null,
+  // token이 존재하면 isAuthenticated를 true로 설정
+  token: localStorage.getItem("token"),
+  isAuthenticated: localStorage.getItem("token") ? true : false,
 
-  storeLogin: (user, token) => set({ user, isAuthenticated: true, token }),
+  user: null,
+
+  storeLogin: (user, token) => {
+    localStorage.setItem("token", token); // 로그인 시 토큰을 로컬스토리지에 저장
+    set({ user, isAuthenticated: true, token });
+    console.log(token);
+  },
 
   storeLogout: () => {
+    localStorage.removeItem("token"); // 로그아웃 시 토큰을 로컬스토리지에서 제거
     set({ user: null, isAuthenticated: false, token: null });
 
     document.cookie =

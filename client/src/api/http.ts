@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { useAuthStore } from "../store/authStore";
 
-const BASE_URL = "http://localhost:5555";
+const BASE_URL = "http://localhost:9999";
 const DEFAULT_TIMEOUT = 30000;
 
 export const createClient = (config?: AxiosRequestConfig) => {
