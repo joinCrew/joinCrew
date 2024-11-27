@@ -10,7 +10,7 @@ interface FormInputs {
   location: string;
   maxParticipants: number;
   gender: string;
-  ageRange: string;
+  ages: string;
 }
 
 function RecruitForm() {
@@ -20,21 +20,17 @@ function RecruitForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormInputs>();
-
+  
   const onSubmit = (data: FormInputs) => {
+    const event_date = `${data.date} ${data.time}:00`;
     const meetingData = {
-      id: Date.now(), // 고유 ID 생성
-      exerciseType: data.exerciseType,
-      date: data.date,
-      time: data.time,
-      location: data.location,
+      title: "",  // Write 페이지에서 입력 예정
+      descript: "", // Write 페이지에서 입력 예정
+      max_members: data.maxParticipants,
       gender: data.gender,
-      ageRange: data.ageRange,
-      title: "",
-      content: "",
-      currentParticipants: 0,
-      maxParticipants: data.maxParticipants,
-      isClosed: false,
+      location: data.location,
+      ages: data.ages,
+      event_date: event_date
     };
 
     navigate("/write", {
@@ -134,7 +130,7 @@ function RecruitForm() {
         <div>
           <label>연령대</label>
           <select
-            {...register("ageRange", { required: "연령대를 선택해주세요" })}
+            {...register("ages", { required: "연령대를 선택해주세요" })}
           >
             <option value="" disabled selected>
               연령대를 선택하세요
@@ -145,7 +141,7 @@ function RecruitForm() {
             <option value="any">연령무관</option>
           </select>
         </div>
-        {errors.ageRange && <p>{errors.ageRange.message}</p>}
+        {errors.ages && <p>{errors.ages.message}</p>}
         <Button>다음</Button>
       </form>
     </RecruitFormStyle>

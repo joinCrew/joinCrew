@@ -2,9 +2,21 @@ import styled from "styled-components";
 import logo from "../../images/logo.png";
 import { IoPersonOutline } from "react-icons/io5";
 import { TiPencil } from "react-icons/ti";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../store/authStore";
 
 function Header() {
+  const { isAuthenticated } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleRecruitClick = () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    } else {
+      navigate("/recruit");
+    }
+  };
+
   return (
     <HeaderStyle>
       <Link to="/">
@@ -13,9 +25,9 @@ function Header() {
         </div>
       </Link>
       <div className="profile">
-        <StyledLink to="/recruit">
+        <StyledButton onClick={handleRecruitClick}>
           <TiPencil style={{ marginRight: 50 }} />
-        </StyledLink>
+        </StyledButton>
         <IoPersonOutline />
       </div>
     </HeaderStyle>
@@ -28,7 +40,7 @@ const HeaderStyle = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-   padding: 0 10%;
+  padding: 0 10%;
 
   .logo {
     height: 50px;
@@ -50,9 +62,14 @@ const HeaderStyle = styled.header`
     color: white;
   }
 `;
-const StyledLink = styled(Link)`
-  color: inherit;
+const StyledButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
   display: flex;
   align-items: center;
+  font-size: 25px;
+  color: white;
 `;
 export default Header;
