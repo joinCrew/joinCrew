@@ -1,26 +1,21 @@
 import styled from "styled-components";
 import DateSlider from "../components/DateSlider";
-import { useMeetingStore } from "../store/meetingStore";
 import { useState } from "react";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { useMeetings } from "../hooks/useMeetings";
 
 function Home() {
-  const meetings = useMeetingStore((state) => state.meetings);
+  const {meetings} = useMeetings();
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date();
     return format(today, "d");
   });
 
   // 선택된 날짜의 모임을 필터링하고 시간순으로 정렬
-  const filteredAndSortedMeetings = meetings
-    .filter((meeting) => {
-      const meetingDate = new Date(meeting.date);
-      return format(meetingDate, "d") === selectedDate;
-    })
-    .sort((a, b) => {
+  const filteredAndSortedMeetings = meetings.sort((a, b) => {
       // 시간 문자열을 비교하여 정렬
-      return a.time.localeCompare(b.time);
+      return a.date.localeCompare(b.date);
     });
 
   const navigate = useNavigate();
@@ -41,7 +36,7 @@ function Home() {
               className="meeting-card"
               onClick={() => openDetail(meeting.id)}
             >
-              <div className="time">{meeting.time}</div>
+              <div className="time">{meeting.date}</div>
               <div className="title_info">
                 <div className="title">{meeting.title}</div>
                 <div className="info">
@@ -53,14 +48,14 @@ function Home() {
                       : "👤 성별무관"}
                   </span>
                   <span>
-                    {meeting.ageRange === "any"
+                    {meeting.ages === "any"
                       ? "연령무관"
-                      : `${meeting.ageRange}대`}
+                      : `${meeting.ages}대`}
                   </span>
                 </div>
               </div>
-              <button className={`button ${meeting.isClosed ? "closed" : ""}`}>
-                {meeting.isClosed ? "마감" : "신청가능"}
+              <button className={`button ${meeting.now_member == meeting.max_member ? "closed" : ""}`}>
+                {meeting.now_member === meeting.max_member ? "마감" : "신청가능"}
               </button>
             </div>
           ))}
