@@ -35,9 +35,14 @@ export const getMeetings = async () =>{
     }
 }
 
-export const getPersonal = async () =>{
+export const getPersonal = async (token : string) =>{
     try{
-        const response = await httpClient.get<ResponseMeeting[]>("/mypage");
+        const response = await httpClient.get<ResponseMeeting[]>("/my-page/my-page",{
+            headers: {
+                Authorization: `Bearer ${token}`,
+              },
+        });
+        console.log(response.data)
         return response.data
     } catch(error){
         return [];
