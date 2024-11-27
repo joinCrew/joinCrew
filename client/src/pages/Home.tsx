@@ -4,6 +4,7 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useMeetings } from "../hooks/useMeetings";
+import ImageSlider from "../components/common/ImageSlider";
 
 function Home() {
   const {meetings} = useMeetings();
@@ -33,6 +34,7 @@ function Home() {
 
   return (
     <>
+      <ImageSlider />
       <DateSlider selectedDate={selectedDate} onDateSelect={setSelectedDate} />
       <HomeStyle>
         <div className="meetings-list">
