@@ -13,9 +13,15 @@ function Home() {
   });
 
   // 선택된 날짜의 모임을 필터링하고 시간순으로 정렬
-  const filteredAndSortedMeetings = meetings.sort((a, b) => {
+  const filteredAndSortedMeetings = meetings.filter((meeting) => {
+    let dateAsString = meeting.event_date.split(' ')[0];
+    console.log(dateAsString);
+    const meetingDate = new Date(dateAsString);
+    return format(meetingDate, "d") === selectedDate;
+  })
+  .sort((a, b) => {
       // 시간 문자열을 비교하여 정렬
-      return a.date.localeCompare(b.date);
+      return a.event_date.localeCompare(b.event_date);
     });
 
   const navigate = useNavigate();
@@ -36,7 +42,7 @@ function Home() {
               className="meeting-card"
               onClick={() => openDetail(meeting.id)}
             >
-              <div className="time">{meeting.date}</div>
+              <div className="time">{meeting.event_date.split(' ')[1].substring(0,5)}</div>
               <div className="title_info">
                 <div className="title">{meeting.title}</div>
                 <div className="info">
@@ -54,8 +60,8 @@ function Home() {
                   </span>
                 </div>
               </div>
-              <button className={`button ${meeting.now_member === meeting.max_member ? "closed" : ""}`}>
-                {meeting.now_member === meeting.max_member ? "마감" : "신청가능"}
+              <button className={`button ${meeting.now_members === meeting.max_members ? "closed" : ""}`}>
+                {meeting.now_members === meeting.max_members ? "마감" : `신청가능`}
               </button>
             </div>
           ))}

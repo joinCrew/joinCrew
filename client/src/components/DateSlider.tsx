@@ -48,8 +48,7 @@ const DateSlider = ({ selectedDate, onDateSelect }: DateSliderProps) => {
       >
         {dates.map(({ date, day, color, dateAsDate }) => (
           <SwiperSlide key={date}>
-            <Link to={location.pathname ==='/' ? `?current_date=${getCurrentDate(dateAsDate)}`
-            : `/mypage?current_date=${getCurrentDate(dateAsDate)}`}>
+            
               <DateButton
                 onClick={() => handleDateClick(date)}
                 className={selectedDate === date ? "selected" : ""}
@@ -60,7 +59,6 @@ const DateSlider = ({ selectedDate, onDateSelect }: DateSliderProps) => {
                   </div>
                 <div>{day}</div>
               </DateButton>
-             </Link>  
           </SwiperSlide>
         ))}
       </Swiper>
