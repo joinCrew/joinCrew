@@ -190,8 +190,8 @@ function EventDetail() {
               {meeting.gender === "female"
                 ? "여자만"
                 : meeting.gender === "male"
-                ? "남자만"
-                : "성별무관"}
+                  ? "남자만"
+                  : "성별무관"}
             </p>
           </div>
           <div className="join">
@@ -213,19 +213,23 @@ function EventDetail() {
                 <>
                   <StyledButton
                     onClick={
-                      isAlreadyJoined ? handleCancelJoin : handleJoinClick
+                      meeting.now_members >= meeting.max_members
+                        ? undefined // 모집 완료된 경우 버튼을 클릭 불가로 설정
+                        : isAlreadyJoined
+                          ? handleCancelJoin
+                          : handleJoinClick
                     }
                     disabled={
                       meeting.now_members >= meeting.max_members || isJoining
-                    } // 참여 중일 때만 비활성화
+                    } // 모집 완료 또는 참여 중인 경우 버튼 비활성화
                   >
-                    {isJoining
-                      ? "참여 중..."
-                      : isAlreadyJoined
-                      ? "참여 취소"
-                      : meeting.now_members >= meeting.max_members
-                      ? "모집 완료"
-                      : "참여하기"}
+                    {meeting.now_members >= meeting.max_members
+                      ? "모집 완료" // 모집 완료 시 텍스트
+                      : isJoining
+                        ? "참여 중..."
+                        : isAlreadyJoined
+                          ? "참여 취소"
+                          : "참여하기"}
                   </StyledButton>
                   <span>
                     현재 인원: {meeting.now_members} / {meeting.max_members} 명
@@ -235,7 +239,7 @@ function EventDetail() {
             </div>
           </div>
         </div>
-        <div className="contents">{meeting.content}</div>
+        <div className="content">{meeting.content}</div>
         <div className="map">지도</div>
         <button
           onClick={handleDeleteClick}
@@ -292,7 +296,7 @@ const EventDetailStyle = styled.div`
     gap: 1rem;
   }
 
-  .contents {
+  .content {
     margin-top: 1.5rem;
     padding-top: 1rem;
     border-top: 1px solid #0e0d0d;

@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import ImageUpload from "../components/ImageUpload";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/common/Button";
+import { httpClient } from "../api/http";
 
 interface FormInputs {
   title: string;
@@ -12,28 +13,33 @@ interface FormInputs {
 function WriteForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  // const addMeeting = useMeetingStore((state) => state.addMeeting);
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   formState: { errors },
-  // } = useForm<FormInputs>();
 
-  // const onSubmit = (data: FormInputs) => {
-  //   const finalMeetingData = {
-  //     ...location.state.meetingData,
-  //     title: data.title,
-  //     content: data.content,
-  //   };
-  //   addMeeting(finalMeetingData);
-  //   navigate("/");
-  // };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormInputs>();
+
+  const onSubmit = async (data: FormInputs) => {
+    try {
+      const finalMeetingData = {
+        ...location.state.meetingData,
+        title: data.title,
+        content: data.content, // 데이터베이스 컬럼명에 맞춰 변경
+      };
+      
+      await httpClient.post('/events', finalMeetingData);
+      navigate("/");
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
     <>
       <WriteFormStyle>
         <ImageUpload />
-        {/* <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <input
               type="text"
@@ -53,9 +59,9 @@ function WriteForm() {
               rows={5}
             />
             {errors.content && <p>{errors.content.message}</p>}
-          </div> */}
+          </div>
           <Button>모임 등록</Button>
-        {/* </form> */}
+        </form>
       </WriteFormStyle>
     </>
   );

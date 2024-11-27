@@ -87,13 +87,13 @@ const registerEvent = async (req, res) => {
       message: "로그인 세션이 만료되었습니다. 다시 로그인 하세요.",
     });
   } else {
-    const { title, descript, max_members, gender, location, ages, event_date } =
+    const { title, content, max_members, gender, location, ages, event_date } =
       req.body;
-    let query = `INSERT INTO events (leader_id, title, descript, max_members, gender, location, ages, event_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?);`;
+    let query = `INSERT INTO events (leader_id, title, content, max_members, gender, location, ages, event_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?);`;
     let values = [
       authorization.id,
       title,
-      descript,
+      content,
       max_members,
       gender,
       location,
