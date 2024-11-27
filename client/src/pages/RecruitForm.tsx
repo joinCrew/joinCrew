@@ -21,21 +21,17 @@ function RecruitForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormInputs>();
-
+  
   const onSubmit = (data: FormInputs) => {
+    const event_date = `${data.date} ${data.time}:00`;
     const meetingData = {
-      id: Date.now(), // 고유 ID 생성
-      exerciseType: data.exerciseType,
-      date: data.date,
-      time: data.time,
-      location: data.location,
+      title: "",  // Write 페이지에서 입력 예정
+      descript: "", // Write 페이지에서 입력 예정
+      max_members: data.maxParticipants,
       gender: data.gender,
-      ageRange: data.ageRange,
-      title: "",
-      content: "",
-      currentParticipants: 0,
-      maxParticipants: data.maxParticipants,
-      isClosed: false,
+      location: data.location,
+      ages: data.ageRange,
+      event_date: event_date
     };
 
     navigate("/write", {

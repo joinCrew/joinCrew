@@ -8,7 +8,9 @@ const ensureAuthorization = (req, res) => {
         console.log("received jwt : ", receivedJwt);
 
         if (receivedJwt) {
-            let decodedJwt = jwt.verify(receivedJwt, process.env.PRIVATE_KEY);
+             // Bearer 토큰에서 실제 JWT 추출
+            const token = receivedJwt.split(' ')[1];
+            let decodedJwt = jwt.verify(token, process.env.PRIVATE_KEY);
             console.log(decodedJwt);
             return decodedJwt;
         } else {

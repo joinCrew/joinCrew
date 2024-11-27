@@ -13,7 +13,7 @@ const getEvents= async (req, res) => {
         user: "root",
         password: "root",
         port : 3307,
-        database: "joinCrew",
+        database: "joincrew",
         dateStrings: true,
     });
     let {current_date} = req.query;
@@ -36,7 +36,7 @@ const getDetail= async (req, res) => {
         user: "root",
         password: "root",
         port : 3307,
-        database: "joinCrew",
+        database: "joincrew",
         dateStrings: true,
     });
     let query = `SELECT * FROM events WHERE id = ?;`
@@ -54,7 +54,7 @@ const registerEvent= async (req, res)=>{
         user: "root",
         password: "root",
         port : 3307,
-        database: "joinCrew",
+        database: "joincrew",
         dateStrings: true,
     });
     let authorization = ensureAuthorization(req, res);
@@ -92,7 +92,7 @@ const removeEvent = async (req, res)=>{
         user: "root",
         password: "root",
         port : 3307,
-        database: "joinCrew",
+        database: "joincrew",
         dateStrings: true,
       });
     let authorization = ensureAuthorization(req, res);

@@ -13,7 +13,7 @@ const joinIn = async (req, res)=>{
         user: "root",
         password: "root",
         port : 3307,
-        database: "joinCrew",
+        database: "joincrew",
         dateStrings: true,
     });
     let authorization = ensureAuthorization(req, res);
@@ -71,7 +71,7 @@ const detach = async (req,res)=>{
       user: "root",
       password: "root",
       port : 3307,
-      database: "joinCrew",
+      database: "joincrew",
       dateStrings: true,
   });
     let authorization = ensureAuthorization(req, res);

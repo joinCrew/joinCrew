@@ -4,6 +4,7 @@ import ImageUpload from "../components/ImageUpload";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMeetingStore } from "../store/meetingStore";
 import Button from "../components/common/Button";
+import { httpClient } from "../api/http";
 
 interface FormInputs {
   title: string;
@@ -13,21 +14,26 @@ interface FormInputs {
 function WriteForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const addMeeting = useMeetingStore((state) => state.addMeeting);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormInputs>();
 
-  const onSubmit = (data: FormInputs) => {
-    const finalMeetingData = {
-      ...location.state.meetingData,
-      title: data.title,
-      content: data.content,
-    };
-    addMeeting(finalMeetingData);
-    navigate("/");
+  const onSubmit = async (data: FormInputs) => {
+    try {
+      const finalMeetingData = {
+        ...location.state.meetingData,
+        title: data.title,
+        descript: data.content, // 데이터베이스 컬럼명에 맞춰 변경
+      };
+      
+      await httpClient.post('/events', finalMeetingData);
+      navigate("/");
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (

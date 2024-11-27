@@ -10,7 +10,7 @@ const getMypage = async (req, res) => {
         user: "root",
         password: "root",
         port : 3307,
-        database: "joinCrew",
+        database: "joincrew",
         dateStrings: true,
     });
   let authorization = ensureAuthorization(req, res);
