@@ -21,7 +21,8 @@ const getEvents = async (req, res) => {
                  FROM events;`;
   let value = [];
   let [rows, field] = await conn.query(query, value);
-  if (rows.length == 0) return res.status(StatusCodes.NOT_FOUND).end();
+  if (rows.length == 0)
+    return res.status(StatusCodes.NOT_FOUND).end();
   return res.status(StatusCodes.OK).json(rows);
 };
 
@@ -79,7 +80,8 @@ const registerEvent = async (req, res) => {
   if (authorization instanceof jwt.TokenExpiredError) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
       message: "로그인 세션이 만료되었습니다. 다시 로그인 하세요.",
-    });
+    }
+  );
   } else if (authorization instanceof jwt.JsonWebTokenError) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
       message: "로그인 세션이 만료되었습니다. 다시 로그인 하세요.",

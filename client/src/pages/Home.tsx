@@ -36,6 +36,9 @@ function Home() {
       <DateSlider selectedDate={selectedDate} onDateSelect={setSelectedDate} />
       <HomeStyle>
         <div className="meetings-list">
+          <div className="event-section-header">
+              <h2></h2>
+          </div>
           {filteredAndSortedMeetings.map((meeting) => (
             <div
               key={meeting.id}
@@ -77,6 +80,14 @@ const HomeStyle = styled.div`
     width: 80%;
     margin: 0 auto;
     gap: 16px;
+    text-align : center;
+    h2 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #808080;
+        margin-bottom: 10px;
+        border-bottom: 5px solid #5872a5;
+      }
   }
 
   .meeting-card {

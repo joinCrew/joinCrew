@@ -27,9 +27,7 @@ const Mypage = () => {
         
     const navigate = useNavigate();
     const openDetail = (id: number) => {
-        navigate(`/detail/${id}`, {
-        state: { meetingId: id },
-        });
+        navigate(`/detail/${id}`);
     };
     const onDateSelect = (date:string)=>{
         setSelectedDate(date);
@@ -41,6 +39,9 @@ const Mypage = () => {
                         onDateSelect={onDateSelect}/>
             <MypageStyle>
                     <div className="meetings-list">
+                      <div className="event-section-header">
+                        <h2>참여중인 모임들</h2>
+                      </div>
                         {filteredAndSortedMeetings.map((meeting) => (
                     <div
                         key={meeting.id}
@@ -77,12 +78,21 @@ const Mypage = () => {
 }
 const MypageStyle = styled.div`
     .meetings-list {
-    display: flex;
-    flex-direction: column;
-    width: 80%;
-    margin: 0 auto;
-    gap: 16px;
+      display: flex;
+      flex-direction: column;
+      width: 80%;
+      margin: 0 auto;
+      gap: 16px;
+      text-align: center;
+      h2 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #808080;
+        margin-bottom: 10px;
+        border-bottom: 5px solid #5872a5;
+      }
   }
+  
 
   .meeting-card {
     cursor: pointer;
