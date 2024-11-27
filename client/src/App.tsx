@@ -12,20 +12,6 @@ import ResetPassword from "./components/ResetPassword";
 import ToastContainer from "./components/common/toast/ToastContainer";
 import Mypage from "./pages/Mypage";
 
-// dummyData는 필요한 경우 별도의 파일로 분리하거나 상태관리로 이동
-// const dummyData = {
-//   img: 1,
-//   eventTitle: "하타요가 시작하기",
-//   eventLocation: "서울 구로구",
-//   eventDate: "11.23 (토)",
-//   eventTime: "오전 10:00",
-//   eventAge: "20대~50대",
-//   eventGender: "남녀 혼성",
-//   description: "요가 시작하기요가 시작하기요가 시작하기요가 시작하기",
-//   now_member: 1,
-//   max_member: 6,
-// };
-
 function App() {
   const routeList = [
     {
@@ -53,13 +39,13 @@ function App() {
       element: <ResetPassword />,
     },
     {
-      path: "/detail",
+      path: "/detail/:id",
       element: <EventDetail />,
     },
     {
       path: "/mypage",
-      element : <Mypage/>
-    }
+      element: <Mypage />,
+    },
   ];
 
   const router = createBrowserRouter(

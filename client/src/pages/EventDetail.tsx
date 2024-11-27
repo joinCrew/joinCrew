@@ -1,57 +1,174 @@
 import { styled } from "styled-components";
 import { FaLocationDot, FaCalendarCheck } from "react-icons/fa6";
 import { IoPeople } from "react-icons/io5";
-import { useMeetingStore } from "../store/meetingStore";
-import { useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { deleteEvent, fetchDetail } from "../api/event.api";
+import { useAuthStore } from "../store/authStore"; // zustand 상태 사용
+import { checkCrew, detachCrew, joinCrew } from "../api/join.api";
+import Button from "../components/common/Button";
+import { useToast } from "../hooks/useToast";
 
-// export type DummyData = {
-//   img: number;
-//   eventTitle?: string;
-//   eventLocation?: string;
-//   eventDate?: string;
-//   eventTime?: string;
-//   eventAge?: string;
-//   eventGender?: string;
-//   description?: string;
-//   now_member: number;
-//   max_member: number;
-// };
-
-// export type detailProps = {
-//   dummyData: DummyData;
-// };
+interface Meeting {
+  id: number;
+  title: string;
+  content: string;
+  location: string;
+  gender: string;
+  ages: string;
+  event_date: string;
+  now_members: number;
+  max_members: number;
+  isLeader: boolean;
+}
 
 function EventDetail() {
-  const location = useLocation();
-  const meeting_id = location.state.meetingId;
-  const meetings = useMeetingStore((state) => state.meetings);
-  const updateMeeting = useMeetingStore((state) => state.updateMeeting);
-  //id 로 일치하는 모임 찾기
-  const meeting = meetings.find((meeting) => meeting.id === meeting_id);
-  const [hasjoined, setHasJoined] = useState(false); // 참여 여부 관리(한 번만 참여하기 누르게 하기 위함)
+  const { id } = useParams<{ id: string }>();
+  const { showToast } = useToast();
 
-  if (!meeting) {
-    return <div>모임을 찾을 수 없습니다.</div>;
-  }
+  // 로그인 상태
+  const { token, isAuthenticated } = useAuthStore((state) => state);
 
-  const countParticipants = () => {
-    if (!hasjoined && meeting.currentParticipants < meeting.maxParticipants) {
-      const updatedMeeting = {
-        ...meeting,
-        currentParticipants: meeting.currentParticipants + 1,
-        isClosed: meeting.currentParticipants + 1 >= meeting.maxParticipants,
-      };
-      updateMeeting(meeting_id, updatedMeeting);
-      setHasJoined(true);
+  // 상태
+  const [meeting, setMeeting] = useState<Meeting | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isJoining, setIsJoining] = useState<boolean>(false);
+  const [isAlreadyJoined, setIsAlreadyJoined] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchEventDetail = async () => {
+      if (!id) {
+        setError("Event ID is missing in the URL.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const data = await fetchDetail(Number(id));
+        console.log("Fetched data:", data);
+        setMeeting(data);
+
+        if (isAuthenticated && data) {
+          const crewCheckData = await checkCrew(data.id, token!); // 모임 ID와 토큰을 이용해 참여 여부 확인
+          console.log(crewCheckData);
+          setIsAlreadyJoined(crewCheckData.hasJoined); // 참여 여부 상태 업데이트
+        }
+      } catch (err) {
+        setError("Failed to fetch event details. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEventDetail();
+  }, [id, token]);
+
+  const handleJoinClick = async () => {
+    if (!isAuthenticated) {
+      setError("로그인 후 참여할 수 있습니다.");
+      return;
+    }
+
+    if (meeting && !isAlreadyJoined) {
+      // 이미 참여한 상태일 때 버튼 클릭 방지
+      setIsJoining(true); // 참여 중 상태
+      try {
+        const isFull = meeting.now_members + 1 >= meeting.max_members;
+
+        if (isFull && !window.confirm("정말 신청하시겠습니까?")) {
+          setIsJoining(false); // 취소 시 진행 중 상태를 false로 설정
+          return;
+        }
+
+        const data = {
+          is_full: isFull,
+          title: meeting.title,
+        };
+
+        await joinCrew(meeting.id, data, token!);
+
+        setMeeting((prevMeeting) => ({
+          ...prevMeeting!,
+          now_members: prevMeeting!.now_members + 1,
+        }));
+
+        if (isFull) {
+          setMeeting((prevMeeting) => ({
+            ...prevMeeting!,
+            is_full: true,
+          }));
+        }
+        // 참여 후 상태 업데이트
+        setIsAlreadyJoined(true);
+        showToast("참여가 완료되었습니다!");
+      } catch (err) {
+        setError("모임 참여에 실패했습니다.");
+      } finally {
+        setIsJoining(false); // 완료 후 상태 초기화
+      }
     }
   };
+
+  const handleCancelJoin = async () => {
+    if (!isAuthenticated) {
+      setError("로그인 후 취소할 수 있습니다.");
+      return;
+    }
+
+    if (meeting) {
+      const confirmed = window.confirm(
+        `정말 "${meeting.title}" 모임 참여를 취소하시겠습니까?`
+      );
+
+      if (!confirmed) {
+        return;
+      }
+      try {
+        // 취소 API 호출
+        await detachCrew(meeting.id, token!);
+
+        setMeeting((prevMeeting) => ({
+          ...prevMeeting!,
+          now_members: prevMeeting!.now_members - 1,
+        }));
+
+        // 취소 후 참여 여부 상태 변경
+        setIsAlreadyJoined(false);
+        showToast("참여가 취소되었습니다...");
+      } catch (err) {
+        setError("모임 참여 취소에 실패했습니다.");
+      }
+    }
+  };
+
+  const handleDeleteClick = async () => {
+    if (!meeting) return;
+
+    if (!window.confirm(`정말 "${meeting.title}" 모임을 삭제하시겠습니까?`)) {
+      return;
+    }
+
+    try {
+      await deleteEvent(meeting.id, token!, meeting.title);
+      alert("모임이 성공적으로 삭제되었습니다.");
+      window.location.href = "/"; // 이벤트 목록 페이지로 리디렉션
+    } catch (err) {
+      setError("모임 삭제에 실패했습니다.");
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div style={{ color: "red" }}>{error}</div>;
+  if (!meeting) {
+    return <div>Event not found</div>;
+  }
 
   return (
     <EventDetailStyle>
       <div>
         <img
-          src={`http://picsum.photos/id/${meeting.id}/1000/600`}
+          src={`http://picsum.photos/id/${meeting.id}/1000/600`} // 일단 이미지 임시
           alt={meeting.title || "Event Image"}
         />
         <h1>{meeting.title}</h1>
@@ -63,13 +180,11 @@ function EventDetail() {
             </p>
             <p className="time">
               <FaCalendarCheck />
-              {`${meeting.date} ${meeting.time}`}
+              {`${meeting.event_date}`}
             </p>
             <p className="age">
               <IoPeople />
-              {meeting.ageRange === "any"
-                ? "연령무관"
-                : `${meeting.ageRange}대`}
+              {meeting.ages === "any" ? "연령무관" : `${meeting.ages} 대`}
             </p>
             <p className="gender">
               {meeting.gender === "female"
@@ -80,20 +195,54 @@ function EventDetail() {
             </p>
           </div>
           <div className="join">
-            <StyledButton
-              onClick={() => countParticipants()}
-              disabled={hasjoined || meeting.isClosed}
-            >
-              참여하기
-            </StyledButton>
-            <span>
-              현재 인원: {meeting.currentParticipants} /{" "}
-              {meeting.maxParticipants} 명
-            </span>
+            <div className="join">
+              {meeting.isLeader ? (
+                // 게시글 작성자(리더)일 경우
+                <>
+                  <StyledButton
+                    onClick={handleDeleteClick}
+                    disabled={!meeting?.isLeader}
+                  >
+                    모임 삭제
+                  </StyledButton>
+                  <span>
+                    현재 인원: {meeting.now_members} / {meeting.max_members} 명
+                  </span>
+                </>
+              ) : (
+                <>
+                  <StyledButton
+                    onClick={
+                      isAlreadyJoined ? handleCancelJoin : handleJoinClick
+                    }
+                    disabled={
+                      meeting.now_members >= meeting.max_members || isJoining
+                    } // 참여 중일 때만 비활성화
+                  >
+                    {isJoining
+                      ? "참여 중..."
+                      : isAlreadyJoined
+                      ? "참여 취소"
+                      : meeting.now_members >= meeting.max_members
+                      ? "모집 완료"
+                      : "참여하기"}
+                  </StyledButton>
+                  <span>
+                    현재 인원: {meeting.now_members} / {meeting.max_members} 명
+                  </span>
+                </>
+              )}
+            </div>
           </div>
         </div>
         <div className="contents">{meeting.content}</div>
         <div className="map">지도</div>
+        <button
+          onClick={handleDeleteClick}
+          disabled={!meeting?.isLeader} // isLeader가 아니면 버튼 비활성화
+        >
+          {meeting?.isLeader ? "모임 삭제" : "삭제 불가"}
+        </button>
       </div>
     </EventDetailStyle>
   );
@@ -119,7 +268,7 @@ const EventDetailStyle = styled.div`
   .center {
     display: flex;
     justify-content: space-between;
-    gap: 1rem; /* 여백 추가로 더 보기 좋게 */
+    gap: 1rem;
   }
 
   .info {

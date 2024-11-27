@@ -20,7 +20,7 @@ function Home() {
 
   const navigate = useNavigate();
   const openDetail = (id: number) => {
-    navigate("/detail", {
+    navigate(`/detail/${id}`, {
       state: { meetingId: id },
     });
   };
@@ -54,7 +54,7 @@ function Home() {
                   </span>
                 </div>
               </div>
-              <button className={`button ${meeting.now_member == meeting.max_member ? "closed" : ""}`}>
+              <button className={`button ${meeting.now_member === meeting.max_member ? "closed" : ""}`}>
                 {meeting.now_member === meeting.max_member ? "마감" : "신청가능"}
               </button>
             </div>
