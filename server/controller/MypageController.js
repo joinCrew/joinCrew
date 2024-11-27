@@ -27,7 +27,7 @@ const getMypage = async (req, res) => {
     let query = `SELECT *, 
                     (SELECT COUNT(*) FROM eventMember WHERE event_id = events.id) AS now_members 
                     FROM events LEFT JOIN eventMember ON events.id = eventMember.event_id 
-                    WHERE user_id = ? AND event_date >= ? AND event_date < ?;`;
+                    WHERE user_id = ? ;`;
     let value = [authorization.id];
     let [rows, field] = await conn.query(query, value);
     if (rows.length == 0) return res.status(StatusCodes.NOT_FOUND).end();
