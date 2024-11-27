@@ -3,9 +3,11 @@ import { FaLocationDot, FaCalendarCheck } from "react-icons/fa6";
 import { IoPeople } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { fetchDetail } from "../api/event.api";
+import { deleteEvent, fetchDetail } from "../api/event.api";
 import { useAuthStore } from "../store/authStore"; // zustand 상태 사용
 import { checkCrew, detachCrew, joinCrew } from "../api/join.api";
+import Button from "../components/common/Button";
+import { useToast } from "../hooks/useToast";
 
 interface Meeting {
   id: number;
@@ -17,15 +19,18 @@ interface Meeting {
   event_date: string;
   now_members: number;
   max_members: number;
+  isLeader: boolean;
 }
 
 function EventDetail() {
   const { id } = useParams<{ id: string }>();
+  const { showToast } = useToast();
 
-  // 로그인 상태 확인
-  const { token, isAuthenticated } = useAuthStore((state) => state); // 로그인 상태 가져오기
+  // 로그인 상태
+  const { token, isAuthenticated } = useAuthStore((state) => state);
 
-  const [meeting, setMeeting] = useState<Meeting | null>(null); // 상태 정의
+  // 상태
+  const [meeting, setMeeting] = useState<Meeting | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isJoining, setIsJoining] = useState<boolean>(false);
@@ -42,10 +47,10 @@ function EventDetail() {
       try {
         const data = await fetchDetail(Number(id));
         console.log("Fetched data:", data);
-        setMeeting(data[0]);
+        setMeeting(data);
 
-        if (isAuthenticated && data[0]) {
-          const crewCheckData = await checkCrew(data[0].id, token!); // 모임 ID와 토큰을 이용해 참여 여부 확인
+        if (isAuthenticated && data) {
+          const crewCheckData = await checkCrew(data.id, token!); // 모임 ID와 토큰을 이용해 참여 여부 확인
           console.log(crewCheckData);
           setIsAlreadyJoined(crewCheckData.hasJoined); // 참여 여부 상태 업데이트
         }
@@ -58,10 +63,6 @@ function EventDetail() {
 
     fetchEventDetail();
   }, [id, token]);
-
-  useEffect(() => {
-    console.log("Updated isAlreadyJoined:", isAlreadyJoined);
-  }, [isAlreadyJoined]); // isAlreadyJoined가 변경될 때마다 실행
 
   const handleJoinClick = async () => {
     if (!isAuthenticated) {
@@ -98,8 +99,9 @@ function EventDetail() {
             is_full: true,
           }));
         }
-
-        setIsAlreadyJoined(true); // 참여 후 상태 업데이트
+        // 참여 후 상태 업데이트
+        setIsAlreadyJoined(true);
+        showToast("참여가 완료되었습니다!");
       } catch (err) {
         setError("모임 참여에 실패했습니다.");
       } finally {
@@ -115,6 +117,13 @@ function EventDetail() {
     }
 
     if (meeting) {
+      const confirmed = window.confirm(
+        `정말 "${meeting.title}" 모임 참여를 취소하시겠습니까?`
+      );
+
+      if (!confirmed) {
+        return;
+      }
       try {
         // 취소 API 호출
         await detachCrew(meeting.id, token!);
@@ -124,10 +133,28 @@ function EventDetail() {
           now_members: prevMeeting!.now_members - 1,
         }));
 
-        setIsAlreadyJoined(false); // 취소 후 참여 여부 상태 변경
+        // 취소 후 참여 여부 상태 변경
+        setIsAlreadyJoined(false);
+        showToast("참여가 취소되었습니다...");
       } catch (err) {
         setError("모임 참여 취소에 실패했습니다.");
       }
+    }
+  };
+
+  const handleDeleteClick = async () => {
+    if (!meeting) return;
+
+    if (!window.confirm(`정말 "${meeting.title}" 모임을 삭제하시겠습니까?`)) {
+      return;
+    }
+
+    try {
+      await deleteEvent(meeting.id, token!, meeting.title);
+      alert("모임이 성공적으로 삭제되었습니다.");
+      window.location.href = "/"; // 이벤트 목록 페이지로 리디렉션
+    } catch (err) {
+      setError("모임 삭제에 실패했습니다.");
     }
   };
 
@@ -169,28 +196,53 @@ function EventDetail() {
           </div>
           <div className="join">
             <div className="join">
-              <StyledButton
-                onClick={isAlreadyJoined ? handleCancelJoin : handleJoinClick}
-                disabled={
-                  meeting.now_members >= meeting.max_members || isJoining // 참여 중일 때만 비활성화
-                }
-              >
-                {isJoining
-                  ? "참여 중..."
-                  : isAlreadyJoined
-                  ? "참여 취소"
-                  : meeting.now_members >= meeting.max_members
-                  ? "모임이 가득 찼습니다"
-                  : "참여하기"}
-              </StyledButton>
-              <span>
-                현재 인원: {meeting.now_members} / {meeting.max_members} 명
-              </span>
+              {meeting.isLeader ? (
+                // 게시글 작성자(리더)일 경우
+                <>
+                  <StyledButton
+                    onClick={handleDeleteClick}
+                    disabled={!meeting?.isLeader}
+                  >
+                    모임 삭제
+                  </StyledButton>
+                  <span>
+                    현재 인원: {meeting.now_members} / {meeting.max_members} 명
+                  </span>
+                </>
+              ) : (
+                <>
+                  <StyledButton
+                    onClick={
+                      isAlreadyJoined ? handleCancelJoin : handleJoinClick
+                    }
+                    disabled={
+                      meeting.now_members >= meeting.max_members || isJoining
+                    } // 참여 중일 때만 비활성화
+                  >
+                    {isJoining
+                      ? "참여 중..."
+                      : isAlreadyJoined
+                      ? "참여 취소"
+                      : meeting.now_members >= meeting.max_members
+                      ? "모집 완료"
+                      : "참여하기"}
+                  </StyledButton>
+                  <span>
+                    현재 인원: {meeting.now_members} / {meeting.max_members} 명
+                  </span>
+                </>
+              )}
             </div>
           </div>
         </div>
         <div className="contents">{meeting.content}</div>
         <div className="map">지도</div>
+        <button
+          onClick={handleDeleteClick}
+          disabled={!meeting?.isLeader} // isLeader가 아니면 버튼 비활성화
+        >
+          {meeting?.isLeader ? "모임 삭제" : "삭제 불가"}
+        </button>
       </div>
     </EventDetailStyle>
   );

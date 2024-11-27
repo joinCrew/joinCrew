@@ -43,7 +43,29 @@ const getDetail = async (req, res) => {
   let value = [id];
   let [rows, field] = await conn.query(query, value);
 
-  return res.status(StatusCodes.OK).json(rows);
+  const event = rows[0];
+
+  // leader_id = 로그인 id 비교
+  let isLeader = false;
+  let authorization;
+
+  try {
+    authorization = ensureAuthorization(req, res);
+
+    if (!(authorization instanceof Error)) {
+      isLeader = authorization.id === event.leader_id;
+    }
+  } catch (err) {
+    console.log("getDetail Error", err);
+  }
+
+  let result = {
+    ...event,
+    isLeader,
+  };
+
+  console.log(result);
+  return res.status(StatusCodes.OK).json(result);
 };
 
 const registerEvent = async (req, res) => {
@@ -102,6 +124,7 @@ const removeEvent = async (req, res) => {
     database: "joinCrew",
     dateStrings: true,
   });
+
   let authorization = ensureAuthorization(req, res);
   if (authorization instanceof jwt.TokenExpiredError) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -112,16 +135,21 @@ const removeEvent = async (req, res) => {
       message: "로그인 세션이 만료되었습니다. 다시 로그인 하세요.",
     });
   } else {
+    // 1. 해당 이벤트에 참가한 모든 사람들 선택
     let query =
       "SELECT DISTINCT email FROM users LEFT JOIN eventMember ON users.id = eventMember.user_id  WHERE eventMember.event_id = ?;";
-    // 해당 이벤트에 참가한 모든사람들 선택
     let [results] = await conn.execute(query, [id]);
 
-    query = `DELETE FROM events WHERE id = ?`;
+    // 2. eventMember 테이블에서 해당 이벤트의 참가자 삭제
+    query = "DELETE FROM eventMember WHERE event_id = ?";
+    await conn.execute(query, [id]);
 
+    // 3. events 테이블에서 해당 이벤트 삭제
+    query = `DELETE FROM events WHERE id = ?`;
     let [rows, field] = await conn.query(query, [id]);
-    // 해당 이벤트 참가자 들에게 알림 전송
-    for (let i = 0; i < Object.keys(results).length; i++) {
+
+    // 4. 참가자들에게 이메일 알림 전송
+    for (let i = 0; i < results.length; i++) {
       const mailOptions = {
         from: sender,
         to: results[i].email,
@@ -133,10 +161,11 @@ const removeEvent = async (req, res) => {
         if (error) {
           console.error(error);
         } else {
-          console.log("Email Sented to " + e);
+          console.log("Email Sent to " + results[i].email);
         }
       });
     }
+
     return res.status(StatusCodes.OK).json(rows);
   }
 };
