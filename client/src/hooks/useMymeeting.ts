@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import { getPersonal, ResponseMeeting } from "../api/meetings.api";
 
-export const useMymeetings = ()=>{
-    let location = useLocation();
+export const useMymeetings = (token : string | null) => {
     let [meetings, setMeetings] = useState<ResponseMeeting[]>([]);
-    useEffect(()=>{
-        getPersonal().then((res)=>{
-            setMeetings(res);
-        });
-    
-    },[]);
-    return {meetings};
 
-}
+    useEffect(() => {
+        if (token) {
+            getPersonal(token).then((res) => {
+                setMeetings(res);
+            }).catch((error) => {
+                console.error("useMymeeting.ts : ", error);
+            });
+        } else {
+            console.log("useMymeeting.ts");
+        }
+    }, [token]); 
+    return { meetings };
+};

@@ -9,8 +9,8 @@ import { useAuthStore } from '../store/authStore';
 import { ResponseMeeting } from '../api/meetings.api';
 
 const Mypage = () => {
-    const { token, isAuthenticated } = useAuthStore((state) => state);
-    const {meetings} = useMymeetings();
+    const token  = useAuthStore((state) => state.token);
+    const {meetings} = useMymeetings(token);
     console.log(meetings);
     const [selectedDate, setSelectedDate] = useState(() => {
         const today = new Date();
