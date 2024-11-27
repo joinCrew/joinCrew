@@ -4,6 +4,8 @@ import { IoPersonOutline } from "react-icons/io5";
 import { TiPencil } from "react-icons/ti";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
+import Dropdown from "./Dropdown";
+import Logout from "../Logout";
 
 function Header() {
   const { isAuthenticated } = useAuthStore();
@@ -24,11 +26,30 @@ function Header() {
           <img src={logo} alt="조인크루" />
         </div>
       </Link>
+
       <div className="profile">
         <StyledButton onClick={handleRecruitClick}>
           <TiPencil style={{ marginRight: 50 }} />
         </StyledButton>
-        <IoPersonOutline />
+        <Dropdown toggleButton={<IoPersonOutline/>}>
+          <nav className='drop'>
+            {isAuthenticated && (
+              <ul>
+                <li className="my"><Link to="/mypage">마이페이지</Link></li>
+                <li><Logout/></li>
+              </ul>
+            )}
+            {!isAuthenticated && (
+              <ul>
+                <li><Link to={'/login'}>로그인</Link></li>
+              </ul>
+
+            )}
+            
+          </nav>
+          
+        </Dropdown>
+        
       </div>
     </HeaderStyle>
   );
@@ -41,7 +62,31 @@ const HeaderStyle = styled.header`
   justify-content: space-between;
   align-items: center;
   padding: 0 10%;
-
+  .drop{
+    ul{
+      display :flex;
+      gap:16px;
+      flex-direction : column;
+      width : 100px;
+      li{
+        a, button{
+          font-size : 1rem;
+          font-weight : 600;
+          text-decoration :none;
+          dispaly : flex;
+          align-item : center;
+          line-height : 1;
+          background : none;
+          border : 0;
+          cursor : pointer,
+          padding : 20px,
+          svg{
+            margin-right : 10px;
+          }
+        }
+      }
+    }   
+  }
   .logo {
     height: 50px;
     display: flex;
@@ -61,6 +106,11 @@ const HeaderStyle = styled.header`
     font-size: 25px;
     color: white;
   }
+
+  .my {
+    display : flex;
+    font-size : 12px;
+    }
 `;
 const StyledButton = styled.button`
   background: none;

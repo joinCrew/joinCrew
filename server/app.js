@@ -31,4 +31,4 @@ const mypageRouter = require("./routes/mypage");
 app.use("/users", userRouter);
 app.use('/events', evenRouter);
 app.use('/crew', crewRouter);
-app.use('/my-page', mypageRouter);
+app.use('/mypage', mypageRouter);
