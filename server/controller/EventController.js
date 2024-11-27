@@ -18,7 +18,7 @@ const getEvents = async (req, res) => {
   
   let query = `SELECT *, 
                 (SELECT COUNT(*) FROM eventMember WHERE event_id = events.id) AS now_members 
-                 FROM events WHERE event_date >= ? AND event_date < ?;`;
+                 FROM events;`;
   let value = [];
   let [rows, field] = await conn.query(query, value);
   if (rows.length == 0) return res.status(StatusCodes.NOT_FOUND).end();
