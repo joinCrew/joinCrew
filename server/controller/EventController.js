@@ -147,7 +147,7 @@ const removeEvent = async (req, res) => {
     let [rows, field] = await conn.query(query, [id]);
 
     // 4. 참가자들에게 이메일 알림 전송
-    for (let i = 0; i < results.length; i++) {
+    for (let i = 0; i < Object.keys(results).length; i++) {
       const mailOptions = {
         from: sender,
         to: results[i].email,
