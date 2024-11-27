@@ -21,6 +21,5 @@ CREATE TABLE eventMember (
   event_id int
 );
 
-ALTER TABLE eventMember ADD FOREIGN KEY (`event_id`) REFERENCES events (`id`);
-
-ALTER TABLE eventMember ADD FOREIGN KEY (`user_id`) REFERENCES users (`id`);
+ALTER TABLE eventMember ADD FOREIGN KEY (`event_id`) REFERENCES events (`id`) ON DELETE CASCADE;
+ALTER TABLE eventMember ADD FOREIGN KEY (`user_id`) REFERENCES users (`id`) ON DELETE CASCADE;
