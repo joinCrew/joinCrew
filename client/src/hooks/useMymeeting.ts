@@ -6,14 +6,11 @@ export const useMymeetings = ()=>{
     let location = useLocation();
     let [meetings, setMeetings] = useState<ResponseMeeting[]>([]);
     useEffect(()=>{
-        const params = new URLSearchParams(location.search);
-        getPersonal({
-            current_date : params.get('current_date')
-        }).then((res)=>{
+        getPersonal().then((res)=>{
             setMeetings(res);
         });
     
-    },[location.search]);
+    },[]);
     return {meetings};
 
 }

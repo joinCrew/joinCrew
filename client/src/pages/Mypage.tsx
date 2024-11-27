@@ -12,9 +12,13 @@ const Mypage = () => {
         const today = new Date();
         return format(today, "d");
     });
-    const filteredAndSortedMeetings = meetings.sort((a, b) => {
+    const filteredAndSortedMeetings = meetings.filter((meeting) => {
+      const meetingDate = new Date(meeting.event_date.split(' ')[0]);
+      return format(meetingDate, "d") === selectedDate;
+    })
+    .sort((a, b) => {
         // 시간 문자열을 비교하여 정렬
-        return a.date.localeCompare(b.date);
+        return a.event_date.localeCompare(b.event_date);
         });
         
     const navigate = useNavigate();
@@ -38,7 +42,7 @@ const Mypage = () => {
                         className="meeting-card"
                         onClick={() => openDetail(meeting.id)}
                         >
-                        <div className="time">{meeting.date}</div>
+                        <div className="time">{meeting.event_date.split(' ')[1].substring(0,5)}</div>
                         <div className="title_info">
                         <div className="title">{meeting.title}</div>
                         <div className="info">
@@ -56,8 +60,8 @@ const Mypage = () => {
                             </span>
                         </div>
                     </div>
-                    <button className={`button ${meeting.now_member > meeting.max_member ? "closed" : ""}`}>
-                        {meeting.max_member > meeting.now_member ? "마감" : "신청가능"}
+                    <button className={`button ${meeting.now_members === meeting.max_members ? "closed" : ""}`}>
+                        {meeting.max_members === meeting.now_members ? "마감" : "신청가능"}
                     </button>
                     </div>
                 ))}

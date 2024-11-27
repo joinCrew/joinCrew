@@ -2,32 +2,32 @@ import { httpClient } from "./http";
 
 export interface ResponseMeeting {
     id: number;
-    date: string;
+    event_date: string;
     location: string;
     gender: string;
     ages: string;
     title: string;
     discript: string;
-    max_member: number; // 최대 인원
-    now_member : number;
+    max_members: number; // 최대 인원
+    now_members : number;
 }
 export interface ReqeustMeeting{
     id: number;
-    date: string;
+    event_date: string;
     location: string;
     gender: string;
     ages: string;
     title: string;
     discript: string;
-    max_member: number;
+    max_members: number;
 }
 
 interface getParams{
     current_date : string | null
 }
 
-export const getMeetings = async (params : getParams) =>{
-    try {const response = await httpClient.get<ResponseMeeting[]>('/events', {params : params});
+export const getMeetings = async () =>{
+    try {const response = await httpClient.get<ResponseMeeting[]>('/events');
     return response.data
     }
     catch(error){
@@ -35,7 +35,7 @@ export const getMeetings = async (params : getParams) =>{
     }
 }
 
-export const getPersonal = async (params : getParams) =>{
+export const getPersonal = async () =>{
     try{
         const response = await httpClient.get<ResponseMeeting[]>("/mypage");
         return response.data
