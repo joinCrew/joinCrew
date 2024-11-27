@@ -4,8 +4,12 @@ import DateSlider from '../components/DateSlider'
 import { format } from "date-fns";
 import { Link, useNavigate } from 'react-router-dom';
 import { useMymeetings } from '../hooks/useMymeeting';
+import { detachCrew } from '../api/join.api';
+import { useAuthStore } from '../store/authStore';
+import { ResponseMeeting } from '../api/meetings.api';
 
 const Mypage = () => {
+    const { token, isAuthenticated } = useAuthStore((state) => state);
     const {meetings} = useMymeetings();
     console.log(meetings);
     const [selectedDate, setSelectedDate] = useState(() => {
@@ -23,13 +27,14 @@ const Mypage = () => {
         
     const navigate = useNavigate();
     const openDetail = (id: number) => {
-        navigate("/detail", {
+        navigate(`/detail/${id}`, {
         state: { meetingId: id },
         });
     };
     const onDateSelect = (date:string)=>{
         setSelectedDate(date);
     }
+   
     return (
         <>
             <DateSlider selectedDate={selectedDate} 
@@ -60,9 +65,7 @@ const Mypage = () => {
                             </span>
                         </div>
                     </div>
-                    <button className={`button ${meeting.now_members === meeting.max_members ? "closed" : ""}`}>
-                        {meeting.max_members === meeting.now_members ? "마감" : "신청가능"}
-                    </button>
+                    
                     </div>
                 ))}
                 </div>

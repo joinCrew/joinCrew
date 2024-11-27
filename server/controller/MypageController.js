@@ -23,14 +23,12 @@ const getMypage = async (req, res) => {
       message: "로그인 세션이 만료되었습니다. 다시 로그인 하세요.",
     });
   } else {
-    let { current_date } = req.query;
-    let nextDay = getNextDate(current_date);
-    console.log(nextDay);
+    
     let query = `SELECT *, 
                     (SELECT COUNT(*) FROM eventMember WHERE event_id = events.id) AS now_members 
                     FROM events LEFT JOIN eventMember ON events.id = eventMember.event_id 
                     WHERE user_id = ? AND event_date >= ? AND event_date < ?;`;
-    let value = [authorization.id, current_date, nextDay];
+    let value = [authorization.id];
     let [rows, field] = await conn.query(query, value);
     if (rows.length == 0) return res.status(StatusCodes.NOT_FOUND).end();
     return res.status(StatusCodes.OK).json(rows);
