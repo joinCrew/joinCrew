@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ResetPassword from "./components/ResetPassword";
 import ToastContainer from "./components/common/toast/ToastContainer";
+import Mypage from "./pages/Mypage";
 
 // dummyData는 필요한 경우 별도의 파일로 분리하거나 상태관리로 이동
 // const dummyData = {
@@ -55,6 +56,10 @@ function App() {
       path: "/detail",
       element: <EventDetail />,
     },
+    {
+      path: "/mypage",
+      element : <Mypage/>
+    }
   ];
 
   const router = createBrowserRouter(

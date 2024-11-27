@@ -5,13 +5,17 @@ import "swiper/css/navigation";
 import { addDays, format } from "date-fns";
 import { ko } from "date-fns/locale";
 import styled from "styled-components";
+import { Link, useLocation } from "react-router-dom";
+import { getCurrentDate } from "../util/getCurrentDate";
+import { useMeetings } from "../hooks/useMeetings";
 
 interface DateSliderProps {
   selectedDate: string;
-  onDateSelect: (date: string) => void;
+  onDateSelect: (data:string) => void;
 }
 
 const DateSlider = ({ selectedDate, onDateSelect }: DateSliderProps) => {
+  const location = useLocation();
   const getTwoWeekDates = () => {
     const dates = [];
     const today = new Date();
@@ -21,6 +25,7 @@ const DateSlider = ({ selectedDate, onDateSelect }: DateSliderProps) => {
       dates.push({
         date: format(date, "d"),
         day: format(date, "E", { locale: ko }),
+        dateAsDate : date,
         color:
           date.getDay() === 6 ? "blue" : date.getDay() === 0 ? "red" : "black",
       });
@@ -28,7 +33,6 @@ const DateSlider = ({ selectedDate, onDateSelect }: DateSliderProps) => {
 
     return dates;
   };
-
   const dates = getTwoWeekDates();
   const handleDateClick = (date: string) => {
     onDateSelect(date); // 부모로부터 받은 함수를 통해 상태 변경
@@ -42,16 +46,21 @@ const DateSlider = ({ selectedDate, onDateSelect }: DateSliderProps) => {
         navigation
         spaceBetween={20}
       >
-        {dates.map(({ date, day, color }) => (
+        {dates.map(({ date, day, color, dateAsDate }) => (
           <SwiperSlide key={date}>
-            <DateButton
-              onClick={() => handleDateClick(date)}
-              className={selectedDate === date ? "selected" : ""}
-              style={{ color: selectedDate === date ? "white" : color }}
-            >
-              <div style={{ marginBottom: "5px" }}>{date}</div>
-              <div>{day}</div>
-            </DateButton>
+            <Link to={location.pathname ==='/' ? `?current_date=${getCurrentDate(dateAsDate)}`
+            : `/mypage?current_date=${getCurrentDate(dateAsDate)}`}>
+              <DateButton
+                onClick={() => handleDateClick(date)}
+                className={selectedDate === date ? "selected" : ""}
+                style={{ color: selectedDate === date ? "white" : color }}
+                >
+                <div style={{ marginBottom: "5px" }}>
+                  {date}
+                  </div>
+                <div>{day}</div>
+              </DateButton>
+             </Link>  
           </SwiperSlide>
         ))}
       </Swiper>

@@ -18,6 +18,7 @@ const getEvents= async (req, res) => {
     });
     let {current_date} = req.query;
     let nextDay = getNextDate(current_date);
+    console.log(current_date);
     console.log(nextDay);
     let query = `SELECT *, 
                 (SELECT COUNT(*) FROM eventMember WHERE event_id = events.id) AS now_members 

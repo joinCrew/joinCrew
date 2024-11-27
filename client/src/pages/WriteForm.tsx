@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import ImageUpload from "../components/ImageUpload";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useMeetingStore } from "../store/meetingStore";
 import Button from "../components/common/Button";
 
 interface FormInputs {
@@ -13,28 +12,28 @@ interface FormInputs {
 function WriteForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const addMeeting = useMeetingStore((state) => state.addMeeting);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormInputs>();
+  // const addMeeting = useMeetingStore((state) => state.addMeeting);
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   formState: { errors },
+  // } = useForm<FormInputs>();
 
-  const onSubmit = (data: FormInputs) => {
-    const finalMeetingData = {
-      ...location.state.meetingData,
-      title: data.title,
-      content: data.content,
-    };
-    addMeeting(finalMeetingData);
-    navigate("/");
-  };
+  // const onSubmit = (data: FormInputs) => {
+  //   const finalMeetingData = {
+  //     ...location.state.meetingData,
+  //     title: data.title,
+  //     content: data.content,
+  //   };
+  //   addMeeting(finalMeetingData);
+  //   navigate("/");
+  // };
 
   return (
     <>
       <WriteFormStyle>
         <ImageUpload />
-        <form onSubmit={handleSubmit(onSubmit)}>
+        {/* <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <input
               type="text"
@@ -54,9 +53,9 @@ function WriteForm() {
               rows={5}
             />
             {errors.content && <p>{errors.content.message}</p>}
-          </div>
+          </div> */}
           <Button>모임 등록</Button>
-        </form>
+        {/* </form> */}
       </WriteFormStyle>
     </>
   );
