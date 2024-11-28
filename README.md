@@ -20,7 +20,16 @@ Programmers Web Full Stack 4기 B반 'joinCrew'
 
 <br>
 
-## 4. Convention
+## 4. 주요기능 
+* 회원가입
+* 로그인
+* 모임 등록 
+* 모임 참가 -> 참가인원이 모집인원과 동일하면 메일 전송
+* 모임 탈퇴
+* 모임 삭제 -> 삭제시 참여자들에게 메일알림 전송 
+
+
+## 5. Convention
 
 1. Commit Convention
 
