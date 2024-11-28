@@ -129,7 +129,7 @@
 **Request**:
 ```json
 {
-    "is_full : "boolean",
+    "is_full" : "boolean",
     "title" : "공유된 일정 제목",
 }
 ```
