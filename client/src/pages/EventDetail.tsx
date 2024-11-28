@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import { deleteEvent, fetchDetail } from "../api/event.api";
 import { useAuthStore } from "../store/authStore"; // zustand 상태 사용
 import { checkCrew, detachCrew, joinCrew } from "../api/join.api";
-import Button from "../components/common/Button";
 import { useToast } from "../hooks/useToast";
+import Map from "../components/Map";
 
 interface Meeting {
   id: number;
@@ -127,7 +127,6 @@ function EventDetail() {
       try {
         // 취소 API 호출
         await detachCrew(meeting.id, token!);
-
         setMeeting((prevMeeting) => ({
           ...prevMeeting!,
           now_members: prevMeeting!.now_members - 1,
@@ -240,14 +239,8 @@ function EventDetail() {
           </div>
         </div>
         <div className="content">{meeting.content}</div>
-        <div className="map">지도</div>
-        <button
-          onClick={handleDeleteClick}
-          disabled={!meeting?.isLeader} // isLeader가 아니면 버튼 비활성화
-        >
-          {meeting?.isLeader ? "모임 삭제" : "삭제 불가"}
-        </button>
       </div>
+      <Map location={meeting.location} />
     </EventDetailStyle>
   );
 }
@@ -298,8 +291,11 @@ const EventDetailStyle = styled.div`
 
   .content {
     margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
     padding-top: 1rem;
+    padding-bottom : 1rem;
     border-top: 1px solid #0e0d0d;
+    border-bottom : 1px solid #0e0d0d;
     max-width: 100%;
     width: 100%;
     height: auto;

@@ -5,6 +5,6 @@ const router = express.Router();
 router.use(express.json());
 const getMypage = require("../controller/MypageController");
 
-router.get("/my-page", getMypage);
+router.get("/", getMypage);
 
 module.exports = router;

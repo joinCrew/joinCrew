@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/common/Button";
+import { useEffect, useState } from "react";
 
 interface FormInputs {
   exerciseType: string;
@@ -18,9 +19,41 @@ function RecruitForm() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormInputs>();
   
+  const [postcodeAPIReady, setPostcodeAPIReady] = useState(false);
+
+  // 우편번호 API 로드 상태 관리
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    script.async = true;
+    script.onload = () => setPostcodeAPIReady(true); // 로드되었을 때 상태 업데이트
+    document.head.appendChild(script);
+
+    return () => {
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+    }
+  }, []);
+
+  // 우편번호 검색 팝업 띄우는 함수
+    const openPostcode = () => {
+      if (postcodeAPIReady) {
+        new window.daum.Postcode({
+          oncomplete: (data: any) => {
+            const fullAddress = data.address + (data.addressType === "R" ? ` (${data.bname})` : "");
+            setValue("location", fullAddress); 
+          },
+        }).open();
+      } else {
+        console.error("우편번호 API가 준비되지 않았습니다.");
+      }
+    };
+
   const onSubmit = (data: FormInputs) => {
     const event_date = `${data.date} ${data.time}:00`;
     const meetingData = {
@@ -37,7 +70,6 @@ function RecruitForm() {
       state: { meetingData },
     });
   };
-
   const today = new Date();
   const twoWeeksLater = new Date(today);
   twoWeeksLater.setDate(today.getDate() + 14);
@@ -97,6 +129,7 @@ function RecruitForm() {
             type="text"
             {...register("location", { required: "장소를 입력해주세요" })}
             placeholder="운동 장소를 입력하세요"
+            onClick = {openPostcode}
           />
         </div>
         {errors.location && <p>{errors.location.message}</p>}
