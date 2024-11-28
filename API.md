@@ -11,7 +11,7 @@
     "password": "password"
 }
 ```
-**Response**:
+**Response**: HTTP-status-code 201
 ```json
 {
    "message" : "회원가입이 완료되었습니다."
@@ -28,18 +28,34 @@
 }
 ```
 + 쿠키(토큰) 저장  
-**Response**:
+**Response**: HTTP-status-code 200
 ```json
 {
    "message" : "로그인 성공"
 }
 ```
 
+### 로그아웃
+**Endpoint**: POST/users/logout  
+**Request**:
+```json
+{
+    "email": "user@example.com",
+    "password": "password"
+}
+```
++ 쿠키(토큰) 저장  
+**Response**: HTTP-status-code 200
+```json
+{
+   "message" : "Logged out successfully"
+}
+```
+
+
 
 <br></br>
 ## Events
-
-**Response**: HTTP-status-code 201
 
 ### 전체 모임 조회
 **Endpoint**: GET/events
@@ -71,6 +87,7 @@
     }
 ]
 ```
+
 ### 모임 상세 조회
 **Endpoint**: GET/events/:id
 
@@ -120,7 +137,6 @@
 
 <br><br>
 
-
 ## Crew
 
 ### 모임 참가
@@ -149,7 +165,7 @@
 **Request**: 
 ```json
         {
-         hasJoined : true
+         "hasJoined" : true
         }
 ```
 
