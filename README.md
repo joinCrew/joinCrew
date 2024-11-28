@@ -28,3 +28,13 @@ Programmers Web Full Stack 4기 B반 'joinCrew'
 |------|---|---|
 |구현|feat/기능 설명|feat/메인 페이지 생성|
 |수정|fix/수정 내용|feat/메인 페이지 레이아웃 수정|
+
+<br>
+
+## 5. 기술 스택
+![HTML](https://img.shields.io/badge/HTML-E34F26?logo=html5&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS-1572B6?logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
+![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-blue?logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)
