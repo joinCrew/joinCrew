@@ -22,13 +22,14 @@ function RecruitForm() {
     setValue,
     formState: { errors },
   } = useForm<FormInputs>();
-  
+
   const [postcodeAPIReady, setPostcodeAPIReady] = useState(false);
 
   // 우편번호 API 로드 상태 관리
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    const script = document.createElement("script");
+    script.src =
+      "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
     script.async = true;
     script.onload = () => setPostcodeAPIReady(true); // 로드되었을 때 상태 업데이트
     document.head.appendChild(script);
@@ -37,33 +38,34 @@ function RecruitForm() {
       if (document.head.contains(script)) {
         document.head.removeChild(script);
       }
-    }
+    };
   }, []);
 
   // 우편번호 검색 팝업 띄우는 함수
-    const openPostcode = () => {
-      if (postcodeAPIReady) {
-        new window.daum.Postcode({
-          oncomplete: (data: any) => {
-            const fullAddress = data.address + (data.addressType === "R" ? ` (${data.bname})` : "");
-            setValue("location", fullAddress); 
-          },
-        }).open();
-      } else {
-        console.error("우편번호 API가 준비되지 않았습니다.");
-      }
-    };
+  const openPostcode = () => {
+    if (postcodeAPIReady) {
+      new window.daum.Postcode({
+        oncomplete: (data: any) => {
+          const fullAddress =
+            data.address + (data.addressType === "R" ? ` (${data.bname})` : "");
+          setValue("location", fullAddress);
+        },
+      }).open();
+    } else {
+      console.error("우편번호 API가 준비되지 않았습니다.");
+    }
+  };
 
   const onSubmit = (data: FormInputs) => {
     const event_date = `${data.date} ${data.time}:00`;
     const meetingData = {
-      title: "",  // Write 페이지에서 입력 예정
+      title: "", // Write 페이지에서 입력 예정
       descript: "", // Write 페이지에서 입력 예정
       max_members: data.maxParticipants,
       gender: data.gender,
       location: data.location,
       ages: data.ages,
-      event_date: event_date
+      event_date: event_date,
     };
 
     navigate("/write", {
@@ -129,7 +131,7 @@ function RecruitForm() {
             type="text"
             {...register("location", { required: "장소를 입력해주세요" })}
             placeholder="운동 장소를 입력하세요"
-            onClick = {openPostcode}
+            onClick={openPostcode}
           />
         </div>
         {errors.location && <p>{errors.location.message}</p>}
@@ -162,9 +164,7 @@ function RecruitForm() {
 
         <div>
           <label>연령대</label>
-          <select
-            {...register("ages", { required: "연령대를 선택해주세요" })}
-          >
+          <select {...register("ages", { required: "연령대를 선택해주세요" })}>
             <option value="" disabled selected>
               연령대를 선택하세요
             </option>
@@ -186,6 +186,7 @@ const RecruitFormStyle = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: "Noto Sans KR", serif;
 
   form {
     display: flex;

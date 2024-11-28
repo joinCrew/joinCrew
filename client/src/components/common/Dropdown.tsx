@@ -60,9 +60,9 @@ const DropdownStyle = styled.div<StyleProps>`
         top : 40px;
         right : 0;
         padding : 16px;
-        background : #fff;
-        box-shadow : 0 0 10px rgba(0,0,0,0.1);
-        border-radius : 200;
+        background : #EAEAEA;
+        box-shadow : 0 0 10px rgba(0,0,0,0.3);
+        border-radius : 20px;
         z-index : 100;
     }
 `

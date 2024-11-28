@@ -163,78 +163,90 @@ function EventDetail() {
     return <div>Event not found</div>;
   }
 
+  const images = [
+    require("../images/sports1.jpg"),
+    require("../images/sports2.jpg"),
+    require("../images/sports3.jpg"),
+    require("../images/sports4.jpg"),
+    require("../images/sports5.jpg"),
+  ];
+
   return (
     <EventDetailStyle>
       <div>
-        <img
-          src={`http://picsum.photos/id/${meeting.id}/1000/600`} // 일단 이미지 임시
-          alt={meeting.title || "Event Image"}
-        />
-        <h1>{meeting.title}</h1>
-        <div className="center">
-          <div className="info">
-            <p className="location">
-              <FaLocationDot />
-              {meeting.location}
-            </p>
-            <p className="time">
-              <FaCalendarCheck />
-              {`${meeting.event_date}`}
-            </p>
-            <p className="age">
-              <IoPeople />
-              {meeting.ages === "any" ? "연령무관" : `${meeting.ages} 대`}
-            </p>
-            <p className="gender">
-              {meeting.gender === "female"
-                ? "여자만"
-                : meeting.gender === "male"
+        <div className="imgAndInfo">
+          <img
+            src={images[Math.floor(Math.random() * images.length)]}
+            alt={meeting.title || "Event Image"}
+          />
+          <h1 style={{ color: "#5872a5", padding: "0 20px"}}>{meeting.title}</h1>
+          <div className="center">
+            <div className="info">
+              <p className="location">
+                <FaLocationDot />
+                {meeting.location}
+              </p>
+              <p className="time">
+                <FaCalendarCheck />
+                {`${meeting.event_date}`}
+              </p>
+              <p className="age">
+                <IoPeople />
+                {meeting.ages === "any" ? "연령무관" : `${meeting.ages} 대`}
+              </p>
+              <p className="gender">
+                {meeting.gender === "female"
+                  ? "여자만"
+                  : meeting.gender === "male"
                   ? "남자만"
                   : "성별무관"}
-            </p>
-          </div>
-          <div className="join">
+              </p>
+            </div>
             <div className="join">
-              {meeting.isLeader ? (
-                // 게시글 작성자(리더)일 경우
-                <>
-                  <StyledButton
-                    onClick={handleDeleteClick}
-                    disabled={!meeting?.isLeader}
-                  >
-                    모임 삭제
-                  </StyledButton>
-                  <span>
-                    현재 인원: {meeting.now_members} / {meeting.max_members} 명
-                  </span>
-                </>
-              ) : (
-                <>
-                  <StyledButton
-                    onClick={
-                      meeting.now_members >= meeting.max_members
-                        ? undefined // 모집 완료된 경우 버튼을 클릭 불가로 설정
-                        : isAlreadyJoined
+              <div className="join">
+                {meeting.isLeader ? (
+                  // 게시글 작성자(리더)일 경우
+                  <>
+                    <StyledButton
+                      onClick={handleDeleteClick}
+                      disabled={!meeting?.isLeader}
+                    >
+                      모임 삭제
+                    </StyledButton>
+                    <span>
+                      현재 인원: {meeting.now_members} / {meeting.max_members}{" "}
+                      명
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <StyledButton
+                      onClick={
+                        meeting.now_members >= meeting.max_members
+                          ? undefined // 모집 완료된 경우 버튼을 클릭 불가로 설정
+                          : isAlreadyJoined
                           ? handleCancelJoin
                           : handleJoinClick
-                    }
-                    disabled={
-                      meeting.now_members >= meeting.max_members || isJoining
-                    } // 모집 완료 또는 참여 중인 경우 버튼 비활성화
-                  >
-                    {meeting.now_members >= meeting.max_members
-                      ? "모집 완료" // 모집 완료 시 텍스트
-                      : isJoining
+                      }
+                      disabled={
+                        meeting.now_members >= meeting.max_members || isJoining
+                      } // 모집 완료 또는 참여 중인 경우 버튼 비활성화
+                    >
+                      {meeting.now_members >= meeting.max_members
+                        ? "모집 완료" // 모집 완료 시 텍스트
+                        : isJoining
                         ? "참여 중..."
                         : isAlreadyJoined
-                          ? "참여 취소"
-                          : "참여하기"}
-                  </StyledButton>
-                  <span>
-                    현재 인원: {meeting.now_members} / {meeting.max_members} 명
-                  </span>
-                </>
-              )}
+                        ? "참여 취소"
+                        : "참여하기"}
+                    </StyledButton>
+                    <span>
+                      현재 인원: {meeting.now_members} / {meeting.max_members}{" "}
+                      명
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -256,16 +268,23 @@ const EventDetailStyle = styled.div`
   padding: 20px 0;
   font-size: 1rem;
 
-  .img {
+  .imgAndInfo {
+    border-radius: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  img {
     overflow: hidden;
-    width: 100%;
     max-width: 100%;
+    padding: 20px;
+    border-radius: 30px;
   }
 
   .center {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
+    padding: 20px;
   }
 
   .info {
@@ -274,6 +293,7 @@ const EventDetailStyle = styled.div`
     justify-content: flex-start;
     gap: 1rem;
     font-weight: 600;
+    font-family: "Orbit", sans-serif;
 
     p {
       flex: 0 0 calc(50% - 0.5rem);
@@ -293,14 +313,16 @@ const EventDetailStyle = styled.div`
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
     padding-top: 1rem;
-    padding-bottom : 1rem;
+    padding-bottom: 1rem;
     border-top: 1px solid #0e0d0d;
-    border-bottom : 1px solid #0e0d0d;
+    border-bottom: 1px solid #0e0d0d;
     max-width: 100%;
     width: 100%;
     height: auto;
     overflow: auto;
     word-wrap: break-word;
+    font-family: "Noto Sans KR", serif;
+    font-weight: 500;
   }
   svg {
     margin-right: 10px;

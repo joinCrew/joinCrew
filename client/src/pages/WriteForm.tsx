@@ -27,11 +27,11 @@ function WriteForm() {
         title: data.title,
         content: data.content, // 데이터베이스 컬럼명에 맞춰 변경
       };
-      
-      await httpClient.post('/events', finalMeetingData);
+
+      await httpClient.post("/events", finalMeetingData);
       navigate("/");
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 

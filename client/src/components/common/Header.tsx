@@ -31,25 +31,38 @@ function Header() {
         <StyledButton onClick={handleRecruitClick}>
           <TiPencil style={{ marginRight: 50 }} />
         </StyledButton>
-        <Dropdown toggleButton={<IoPersonOutline/>}>
-          <nav className='drop'>
+        <Dropdown
+          toggleButton={
+            <IoPersonOutline
+              style={{
+                width: "24px",
+                height: "24px",
+                color: "white",
+                display: "block",
+              }}
+            />
+          }
+        >
+          <nav className="drop">
             {isAuthenticated && (
               <ul>
-                <li className="my"><Link to="/mypage">마이페이지</Link></li>
-                <li><Logout/></li>
+                <li className="my">
+                  <Link to="/mypage">마이페이지</Link>
+                </li>
+                <li>
+                  <Logout />
+                </li>
               </ul>
             )}
             {!isAuthenticated && (
               <ul>
-                <li><Link to={'/login'}>로그인</Link></li>
+                <li>
+                  <Link to={"/login"}>로그인</Link>
+                </li>
               </ul>
-
             )}
-            
           </nav>
-          
         </Dropdown>
-        
       </div>
     </HeaderStyle>
   );
@@ -62,30 +75,37 @@ const HeaderStyle = styled.header`
   justify-content: space-between;
   align-items: center;
   padding: 0 10%;
-  .drop{
-    ul{
-      display :flex;
-      gap:16px;
-      flex-direction : column;
-      width : 100px;
-      li{
-        a, button{
-          font-size : 1rem;
-          font-weight : 600;
-          text-decoration :none;
-          dispaly : flex;
-          align-item : center;
-          line-height : 1;
-          background : none;
-          border : 0;
-          cursor : pointer,
-          padding : 20px,
-          svg{
-            margin-right : 10px;
+
+  .drop {
+    ul {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-direction: column;
+      width: 100px;
+
+      li {
+        a,
+        button {
+          font-size: 1rem;
+          font-family: "Noto Sans KR", serif;
+          font-weight: 500;
+          font-style: normal;
+          color:black;
+          text-decoration: none;
+          line-height: 1;
+          background: none;
+          border: 0;
+          cursor: pointer;
+
+          &:hover {
+            color: #5872a5;
+            transform: scale(1.2);
+            font-weight: bold;
           }
         }
       }
-    }   
+    }
   }
   .logo {
     height: 50px;
@@ -103,14 +123,17 @@ const HeaderStyle = styled.header`
 
   .profile {
     display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 25px;
     color: white;
+    gap: 20px;
   }
 
   .my {
-    display : flex;
-    font-size : 12px;
-    }
+    display: flex;
+    font-size: 12px;
+  }
 `;
 const StyledButton = styled.button`
   background: none;
@@ -121,5 +144,6 @@ const StyledButton = styled.button`
   align-items: center;
   font-size: 25px;
   color: white;
+  height: 25px;
 `;
 export default Header;

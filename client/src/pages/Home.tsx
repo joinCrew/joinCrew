@@ -7,20 +7,21 @@ import { useMeetings } from "../hooks/useMeetings";
 import ImageSlider from "../components/common/ImageSlider";
 
 function Home() {
-  const {meetings} = useMeetings();
+  const { meetings } = useMeetings();
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date();
     return format(today, "d");
   });
 
   // 선택된 날짜의 모임을 필터링하고 시간순으로 정렬
-  const filteredAndSortedMeetings = meetings.filter((meeting) => {
-    let dateAsString = meeting.event_date.split(' ')[0];
-    console.log(dateAsString);
-    const meetingDate = new Date(dateAsString);
-    return format(meetingDate, "d") === selectedDate;
-  })
-  .sort((a, b) => {
+  const filteredAndSortedMeetings = meetings
+    .filter((meeting) => {
+      let dateAsString = meeting.event_date.split(" ")[0];
+      console.log(dateAsString);
+      const meetingDate = new Date(dateAsString);
+      return format(meetingDate, "d") === selectedDate;
+    })
+    .sort((a, b) => {
       // 시간 문자열을 비교하여 정렬
       return a.event_date.localeCompare(b.event_date);
     });
@@ -39,7 +40,7 @@ function Home() {
       <HomeStyle>
         <div className="meetings-list">
           <div className="event-section-header">
-              <h2></h2>
+            <h2></h2>
           </div>
           {filteredAndSortedMeetings.map((meeting) => (
             <div
@@ -47,7 +48,9 @@ function Home() {
               className="meeting-card"
               onClick={() => openDetail(meeting.id)}
             >
-              <div className="time">{meeting.event_date.split(' ')[1].substring(0,5)}</div>
+              <div className="time">
+                {meeting.event_date.split(" ")[1].substring(0, 5)}
+              </div>
               <div className="title_info">
                 <div className="title">{meeting.title}</div>
                 <div className="info">
@@ -59,14 +62,18 @@ function Home() {
                       : "👤 성별무관"}
                   </span>
                   <span>
-                    {meeting.ages === "any"
-                      ? "연령무관"
-                      : `${meeting.ages}대`}
+                    {meeting.ages === "any" ? "연령무관" : `${meeting.ages}대`}
                   </span>
                 </div>
               </div>
-              <button className={`button ${meeting.now_members === meeting.max_members ? "closed" : ""}`}>
-                {meeting.now_members === meeting.max_members ? "마감" : `신청가능`}
+              <button
+                className={`button ${
+                  meeting.now_members === meeting.max_members ? "closed" : ""
+                }`}
+              >
+                {meeting.now_members === meeting.max_members
+                  ? "마감"
+                  : `신청가능`}
               </button>
             </div>
           ))}
@@ -82,37 +89,46 @@ const HomeStyle = styled.div`
     width: 80%;
     margin: 0 auto;
     gap: 16px;
-    text-align : center;
+    text-align: center;
+    
     h2 {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #808080;
-        margin-bottom: 10px;
-        border-bottom: 5px solid #5872a5;
-      }
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #808080;
+      margin-bottom: 10px;
+      border-bottom: 5px solid #5872a5;
+    }
   }
 
   .meeting-card {
     cursor: pointer;
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 20px;
     border-radius: 8px;
     border: 1px solid #eee;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
     .time {
       width: 20%;
       font-size: 25px;
-      font-weight: bold;
       margin: 10px 0;
+
+      font-family: "Orbit", sans-serif;
+      font-weight: 600;
+      font-style: normal;
     }
 
     .title_info {
       width: 70%;
+      text-align:left;
+      font-family: "Noto Sans KR", serif;
     }
 
     .title {
       font-size: 22px;
-      font-weight: bold;
+      font-weight: 500;
       margin: 8px 0;
     }
 
@@ -127,6 +143,7 @@ const HomeStyle = styled.div`
       float: right;
       padding: 8px 16px;
       border-radius: 4px;
+      border:0;
       background-color: #1e90ff;
       color: white;
       font-size: 17px;

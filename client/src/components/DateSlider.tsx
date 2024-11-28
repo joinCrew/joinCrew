@@ -11,7 +11,7 @@ import { useMeetings } from "../hooks/useMeetings";
 
 interface DateSliderProps {
   selectedDate: string;
-  onDateSelect: (data:string) => void;
+  onDateSelect: (data: string) => void;
 }
 
 const DateSlider = ({ selectedDate, onDateSelect }: DateSliderProps) => {
@@ -25,7 +25,7 @@ const DateSlider = ({ selectedDate, onDateSelect }: DateSliderProps) => {
       dates.push({
         date: format(date, "d"),
         day: format(date, "E", { locale: ko }),
-        dateAsDate : date,
+        dateAsDate: date,
         color:
           date.getDay() === 6 ? "blue" : date.getDay() === 0 ? "red" : "black",
       });
@@ -48,17 +48,14 @@ const DateSlider = ({ selectedDate, onDateSelect }: DateSliderProps) => {
       >
         {dates.map(({ date, day, color, dateAsDate }) => (
           <SwiperSlide key={date}>
-            
-              <DateButton
-                onClick={() => handleDateClick(date)}
-                className={selectedDate === date ? "selected" : ""}
-                style={{ color: selectedDate === date ? "white" : color }}
-                >
-                <div style={{ marginBottom: "5px" }}>
-                  {date}
-                  </div>
-                <div>{day}</div>
-              </DateButton>
+            <DateButton
+              onClick={() => handleDateClick(date)}
+              className={selectedDate === date ? "selected" : ""}
+              style={{ color: selectedDate === date ? "white" : color }}
+            >
+              <div style={{ marginBottom: "5px" }}>{date}</div>
+              <div>{day}</div>
+            </DateButton>
           </SwiperSlide>
         ))}
       </Swiper>
@@ -66,12 +63,39 @@ const DateSlider = ({ selectedDate, onDateSelect }: DateSliderProps) => {
   );
 };
 
+const DateButton = styled.button`
+  border: none;
+  background: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 40px;
+  font-size: 17px;
+  margin: 0 10px;
+  width: 130px;
+  height: fit-content;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  &.selected {
+    background-color: #74d36d;
+    color: white;
+  }
+`;
+
 const DateSliderStyle = styled.div`
   width: 70%;
   margin: 40px auto;
 
   .swiper {
     padding: 0 50px;
+  }
+
+  ${DateButton} {
+    font-family: "Orbit", sans-serif;
+    font-weight: 500;
+    font-style: normal;
   }
 
   .swiper-button-next,
@@ -92,27 +116,6 @@ const DateSliderStyle = styled.div`
 
   .swiper-button-prev {
     left: 10px;
-  }
-`;
-
-const DateButton = styled.button`
-  border: none;
-  background: none;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 40px;
-  font-size: 17px;
-  margin: 0 10px;
-  width: 130px;
-  height: fit-content;
-
-  &:hover {
-    background-color: #f0f0f0;
-  }
-
-  &.selected {
-    background-color: #74d36d;
-    color: white;
   }
 `;
 

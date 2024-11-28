@@ -85,6 +85,7 @@ const MypageStyle = styled.div`
       gap: 16px;
       text-align: center;
       h2 {
+        font-family: "Orbit", sans-serif;
         font-size: 1.5rem;
         font-weight: bold;
         color: #808080;
@@ -97,24 +98,33 @@ const MypageStyle = styled.div`
   .meeting-card {
     cursor: pointer;
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 20px;
     border-radius: 8px;
     border: 1px solid #eee;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
     .time {
       width: 20%;
       font-size: 25px;
       font-weight: bold;
       margin: 10px 0;
+
+      font-family: "Orbit", sans-serif;
+      font-weight: 600;
+      font-style: normal;
     }
 
     .title_info {
       width: 70%;
+      text-align:left;
+      font-family: "Noto Sans KR", serif;
     }
 
     .title {
       font-size: 22px;
-      font-weight: bold;
+      font-weight: 500;
       margin: 8px 0;
     }
 
@@ -129,6 +139,7 @@ const MypageStyle = styled.div`
       float: right;
       padding: 8px 16px;
       border-radius: 4px;
+      border:0;
       background-color: #1e90ff;
       color: white;
       font-size: 17px;
