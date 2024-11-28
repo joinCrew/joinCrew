@@ -54,9 +54,9 @@
         "event_date" : "2024-11-29 10:00:00 ",
         "leader_id" : 1,
         "max_members" : 6,
-        "location" : 서울시 강서구,
-        "ages" : 20대,
-        "content" : 상세내용
+        "location" : "서울시 강서구",
+        "ages" : "20대",
+        "content" : "상세내용"
 
     },
     {   "id" : 1
@@ -64,9 +64,9 @@
         "event_date" : "2024-11-29 10:00:00 ",
         "leader_id" : 1,
         "max_members" : 6,
-        "location" : 서울시 강서구,
-        "ages" : 20대,
-        "content" : 상세내용
+        "location" : "서울시 강서구",
+        "ages" : "20대",
+        "content" : "상세내용"
 
     }
 ]
@@ -84,10 +84,10 @@
         "event_date" : "2024-11-29 10:00:00 ",
         "leader_id" : 1,
         "max_members" : 6,
-        "location" : 서울시 강서구,
-        "ages" : 20대,
-        "content" : 상세내용,
-        "is_leader" : 사용자가 모임의 리더인지 아닌지 판별
+        "location" : "서울시 강서구",
+        "ages" : "20대",
+        "content" : "상세내용",
+        "is_leader" : "사용자가 모임의 리더인지 아닌지 판별"
 
     }
 ]
@@ -105,15 +105,17 @@
 
 **Endpoint**: POST/events/:id  
 
-**Request**: {
-              title : 제목 , 
-              content : 내용,
-              max_member : 모집인원, 
-              location : 위치, 
-              ages : 연령, 
-              event_date: 날짜와 시간
-              }
-
+**Request**: 
+```json
+            {
+              "title" : "제목" , 
+              "content" : "내용",
+              "max_member" : "모집인원", 
+              "location" : "위치", 
+              "ages" : "연령", 
+              "event_date" : "날짜와 시간"
+            }
+```
 **Response**: HTTP-status-code 200
 
 <br><br>
@@ -127,7 +129,7 @@
 **Request**:
 ```json
 {
-    "is_full : 참여인원과 모집인원을 비교 : boolean,
+    "is_full : "boolean",
     "title" : "공유된 일정 제목",
 }
 ```
@@ -137,18 +139,19 @@
 **Endpoint**: DELETE/crew/:id  
 
 **Request**:
-```json
-{
-    "is_full : 참여인원과 모집인원을 비교 : boolean,
-    "title" : "공유된 일정 제목",
-}
-```
-**Response**: HTTP-status-code 201
 
-###모임에 참여중인지 확인
+**Response**: HTTP-status-code 200
+
+
+### 모임에 참여중인지 확인
 **Endpoint**: DELETE/crew/:id  
 
-**Request**: { hasJoined : true }
+**Request**: 
+```json
+        {
+         hasJoined : true
+        }
+```
 
 **Response**: HTTP-status-code 200
 
