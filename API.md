@@ -72,8 +72,8 @@
         "max_members" : 6,
         "location" : "서울시 강서구",
         "ages" : "20대",
-        "content" : "상세내용"
-
+        "content" : "상세내용",
+        "now_members" : 4
     },
     {   "id" : 1
         "title": "일정 제목",
@@ -82,7 +82,8 @@
         "max_members" : 6,
         "location" : "서울시 강서구",
         "ages" : "20대",
-        "content" : "상세내용"
+        "content" : "상세내용",
+        "now_members" : 4
 
     }
 ]
@@ -104,7 +105,8 @@
         "location" : "서울시 강서구",
         "ages" : "20대",
         "content" : "상세내용",
-        "is_leader" : "사용자가 모임의 리더인지 아닌지 판별"
+        "is_leader" : "사용자가 모임의 리더인지 아닌지 판별",
+        "now_members" : 4
 
     }
 ]
